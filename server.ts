@@ -27,19 +27,23 @@ async function startServer() {
   app.use(express.json());
 
   const transporter = nodemailer.createTransport({
-    host: 'smtp.hostinger.com',
-    port: 465,
-    secure: true,
+    host: process.env.SMTP_HOST || 'smtp.hostinger.com',
+    port: parseInt(process.env.SMTP_PORT || '465'),
+    secure: process.env.SMTP_PORT === '465' || !process.env.SMTP_PORT,
     auth: {
-      user: 'info@tsameemevents.com',
-      pass: 'JaKa1@3RiYa'
+      user: process.env.SMTP_USER || '',
+      pass: process.env.SMTP_PASS || ''
     }
   });
 
   const sendEmail = async (to: string, subject: string, text: string, html: string) => {
     try {
+      if (!process.env.SMTP_USER || !process.env.SMTP_PASS) {
+        console.warn("Email credentials not configured. Skipping email send.");
+        return false;
+      }
       await transporter.sendMail({
-        from: '"YA Wedding" <info@tsameemevents.com>',
+        from: `"YA Wedding" <${process.env.SMTP_USER}>`,
         to,
         subject,
         text,
@@ -156,26 +160,31 @@ async function startServer() {
     });
 
     socket.on("send_message", (data) => {
-      const { senderId, receiverId, content } = data;
-      
-      // Save to DB
-      const stmt = db.prepare("INSERT INTO messages (sender_id, receiver_id, content) VALUES (?, ?, ?)");
-      const result = stmt.run(senderId, receiverId, content);
-      const messageId = result.lastInsertRowid;
+      try {
+        const { senderId, receiverId, content } = data;
+        
+        // Save to DB
+        const stmt = db.prepare("INSERT INTO messages (sender_id, receiver_id, content) VALUES (?, ?, ?)");
+        const result = stmt.run(senderId, receiverId, content);
+        const messageId = result.lastInsertRowid;
 
-      const newMessage = {
-        id: messageId,
-        sender_id: senderId,
-        receiver_id: receiverId,
-        content,
-        created_at: new Date().toISOString(),
-        is_read: 0
-      };
+        const newMessage = {
+          id: messageId,
+          sender_id: senderId,
+          receiver_id: receiverId,
+          content,
+          created_at: new Date().toISOString(),
+          is_read: 0
+        };
 
-      // Emit to receiver
-      io.to(receiverId).emit("new_message", newMessage);
-      // Emit back to sender for confirmation
-      io.to(senderId).emit("message_sent", newMessage);
+        // Emit to receiver
+        io.to(receiverId).emit("new_message", newMessage);
+        // Emit back to sender for confirmation
+        io.to(senderId).emit("message_sent", newMessage);
+      } catch (error) {
+        console.error("Error sending message:", error);
+        socket.emit("message_error", { error: "Failed to send message" });
+      }
     });
 
     socket.on("disconnect", () => {
@@ -233,7 +242,11 @@ async function startServer() {
   const getUserIdFromToken = (authHeader: string | undefined) => {
     if (!authHeader) return null;
     if (authHeader === "Bearer ya-admin-secret") return "admin";
-    if (authHeader.startsWith("Bearer user-token-")) return authHeader.replace("Bearer user-token-", "");
+    if (authHeader.startsWith("Bearer user-token-")) {
+      const userId = authHeader.replace("Bearer user-token-", "");
+      const user = db.prepare("SELECT id FROM users WHERE id = ?").get(userId);
+      return user ? userId : null;
+    }
     return null;
   };
 
@@ -242,8 +255,8 @@ async function startServer() {
     const currentUserId = getUserIdFromToken(req.headers.authorization);
     if (!currentUserId) return res.status(401).json({ error: "Unauthorized" });
 
-    // Users can only see their own messages with admin, or admin can see all
-    if (currentUserId !== 'admin' && currentUserId !== userId) {
+    // Users can only chat with admin, and admin can chat with anyone
+    if (currentUserId !== 'admin' && userId !== 'admin') {
       return res.status(403).json({ error: "Forbidden" });
     }
 
@@ -313,18 +326,37 @@ async function startServer() {
   ensureFile(ADMIN_SECURITY_PATH, {
     slug: "/admin-portal-access",
     securityQuestions: [
-      { q: "Who is Owner", a: "Jakariya" },
-      { q: "Who is Developer", a: "Jaek" },
-      { q: "What is Security Code", a: "82725" }
+      { q: "Who is Owner", a: process.env.ADMIN_SEC_A1 || "Owner" },
+      { q: "Who is Developer", a: process.env.ADMIN_SEC_A2 || "Developer" },
+      { q: "What is Security Code", a: process.env.ADMIN_SEC_A3 || "12345" }
     ],
     allowedGeos: ["Sylhet, Bangladesh", "Dubai, UAE"],
     adminCredentials: {
-      username: "admin@ya.com",
-      password: "ya-admin-2024"
+      username: process.env.ADMIN_USERNAME || "admin@example.com",
+      password: process.env.ADMIN_PASSWORD || "admin-password"
     }
   });
   ensureFile(BLOCKED_IPS_PATH, { blocked: [] });
   ensureFile(REDIRECTIONS_PATH, { redirections: [] });
+  ensureFile(SERVICES_PATH, { services: [] });
+  ensureFile(BLOGS_PATH, { blogs: [] });
+  ensureFile(SETTINGS_PATH, {});
+  ensureFile(RATINGS_PATH, { ratings: [] });
+  ensureFile(PACKAGE_STEPS_PATH, []);
+  ensureFile(PROMOS_PATH, { promos: [] });
+  ensureFile(PAGES_PATH, { pages: [] });
+  ensureFile(MEDIA_PATH, {});
+  ensureFile(BOOKING_FORMS_PATH, { forms: [] });
+  ensureFile(PACKAGES_DATA_PATH, { packages: [] });
+  ensureFile(PARTNERSHIPS_PATH, { partnerships: [] });
+  ensureFile(DEVELOPMENT_PATH, {});
+  ensureFile(WIDGET_PRO_PATH, { items: [] });
+  ensureFile(CONTAINERS_PATH, { containers: [] });
+  ensureFile(STANDARD_WIDGETS_PATH, { widgets: [] });
+  ensureFile(EMAIL_TEMPLATES_PATH, { templates: [] });
+  ensureFile(PDF_TEMPLATES_PATH, { templates: [] });
+  ensureFile(THEME_BUILDER_PATH, { templates: [] });
+  ensureFile(CUSTOM_POST_TYPES_PATH, { postTypes: [] });
 
   // Redirections Middleware
   app.use((req, res, next) => {
@@ -544,11 +576,12 @@ async function startServer() {
     const { email, password } = req.body;
     
     // Check for Master Admin first
-    if (email === 'admin@ya.com' && password === 'ya-admin-2024') {
+    const config = JSON.parse(fs.readFileSync(ADMIN_SECURITY_PATH, "utf-8"));
+    if (email === config.adminCredentials.username && password === config.adminCredentials.password) {
       return res.json({ 
         success: true, 
         token: 'ya-admin-secret', 
-        user: { id: 'admin', email: 'admin@ya.com', name: 'Master Admin', role: 'admin' } 
+        user: { id: 'admin', email: config.adminCredentials.username, name: 'Master Admin', role: 'admin' } 
       });
     }
 
@@ -567,6 +600,63 @@ async function startServer() {
       token: `user-token-${user.id}`, 
       user: { id: user.id, email: user.email, name: user.name, role: user.role } 
     });
+  });
+
+  app.post("/api/auth/forgot-password", async (req, res) => {
+    const { email: rawEmail } = req.body;
+    const email = rawEmail?.toLowerCase().trim();
+    if (!email) return res.status(400).json({ error: "Email is required" });
+
+    const user = db.prepare("SELECT * FROM users WHERE email = ?").get(email);
+    if (!user) return res.status(404).json({ error: "User not found" });
+
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    const expiresAt = new Date(Date.now() + 10 * 60 * 1000).toISOString();
+
+    try {
+      db.prepare("INSERT OR REPLACE INTO otps (email, otp, expires_at, verified) VALUES (?, ?, ?, 0)").run(email, otp, expiresAt);
+
+      const emailHtml = `
+        <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 40px; border: 1px solid #eee; border-radius: 16px;">
+          <h2 style="color: #00C896;">Password Reset Request</h2>
+          <p>You requested to reset your password. Use the code below to proceed:</p>
+          <div style="background: #f9f9f9; padding: 20px; border-radius: 12px; text-align: center; margin: 20px 0;">
+            <h1 style="font-size: 32px; letter-spacing: 5px; margin: 0;">${otp}</h1>
+          </div>
+          <p>This code will expire in 10 minutes.</p>
+          <p>If you didn't request this, you can safely ignore this email.</p>
+        </div>
+      `;
+
+      await sendEmail(email, `${otp} is your password reset code`, `Your password reset code is: ${otp}`, emailHtml);
+      res.json({ success: true });
+    } catch (e) {
+      res.status(500).json({ error: "Failed to send reset code" });
+    }
+  });
+
+  app.post("/api/auth/reset-password", async (req, res) => {
+    const { email: rawEmail, otp: rawOtp, newPassword } = req.body;
+    const email = rawEmail?.toLowerCase().trim();
+    const otp = rawOtp?.trim();
+
+    if (!email || !otp || !newPassword) {
+      return res.status(400).json({ error: "All fields are required" });
+    }
+
+    const otpRecord: any = db.prepare("SELECT * FROM otps WHERE email = ? AND otp = ?").get(email, otp);
+    if (!otpRecord || new Date(otpRecord.expires_at) < new Date()) {
+      return res.status(400).json({ error: "Invalid or expired code" });
+    }
+
+    try {
+      const hashedPassword = await bcrypt.hash(newPassword, 10);
+      db.prepare("UPDATE users SET password = ? WHERE email = ?").run(hashedPassword, email);
+      db.prepare("DELETE FROM otps WHERE email = ?").run(email);
+      res.json({ success: true });
+    } catch (e) {
+      res.status(500).json({ error: "Failed to reset password" });
+    }
   });
 
   // Admin Security Endpoints

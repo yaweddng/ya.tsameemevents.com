@@ -67,4 +67,14 @@ try {
   // Column might already exist
 }
 
+// Ensure admin user exists for foreign key constraints in messages
+try {
+  db.exec(`
+    INSERT OR IGNORE INTO users (id, email, name, username, role) 
+    VALUES ('admin', 'admin@example.com', 'Admin', 'admin', 'admin')
+  `);
+} catch (e) {
+  console.error("Error creating admin user:", e);
+}
+
 export default db;

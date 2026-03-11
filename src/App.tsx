@@ -30,6 +30,7 @@ import { SiteSettings } from './types';
 
 import { useCMSData } from './hooks/useCMSData';
 import { useAuth } from './hooks/useAuth';
+import { AuthProvider } from './context/AuthContext';
 
 const ProtectedRoute = ({ children, role }: { children: React.ReactNode; role?: 'admin' | 'customer' | 'user' }) => {
   const { user, loading } = useAuth();
@@ -107,6 +108,14 @@ const SEO = ({ title, description, schema, image }: { title: string; description
 };
 
 export default function App() {
+  return (
+    <AuthProvider>
+      <AppContent />
+    </AuthProvider>
+  );
+}
+
+function AppContent() {
   const [adminSlug, setAdminSlug] = React.useState('/admin-portal-access');
   const [siteInfo, setSiteInfo] = React.useState<{ username: string; siteId: string } | null>(null);
   const [siteLoading, setSiteLoading] = React.useState(true);
@@ -374,13 +383,23 @@ const DynamicPageWrapper = ({ slugOverride, isUserSite, username: propUsername }
         : '/api/pages';
 
       fetch(endpoint)
-        .then(res => res.json())
+        .then(res => {
+          if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+          const contentType = res.headers.get("content-type");
+          if (!contentType || !contentType.includes("application/json")) {
+            throw new Error(`Expected JSON but got ${contentType}`);
+          }
+          return res.json();
+        })
         .then(data => {
           const found = data.find((p: any) => p.slug === slug);
           setPage(found || null);
           setLoading(false);
         })
-        .catch(() => setLoading(false));
+        .catch(err => {
+          console.error(`Error fetching page ${slug}:`, err);
+          setLoading(false);
+        });
     };
 
     fetchPage();

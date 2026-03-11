@@ -4,10 +4,11 @@ import { LogIn, UserPlus, Mail, Lock, User, ArrowRight, ShieldCheck } from 'luci
 import { useNavigate } from 'react-router-dom';
 
 export const Login = () => {
-  const [mode, setMode] = React.useState<'login' | 'register'>('login');
+  const [mode, setMode] = React.useState<'login' | 'register' | 'forgot-password'>('login');
   const [step, setStep] = React.useState<'details' | 'otp'>('details');
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
+  const [newPassword, setNewPassword] = React.useState('');
   const [name, setName] = React.useState('');
   const [username, setUsername] = React.useState('');
   const [otp, setOtp] = React.useState('');
@@ -20,8 +21,10 @@ export const Login = () => {
     setError('');
     setLoading(true);
 
+    const endpoint = mode === 'forgot-password' ? '/api/auth/forgot-password' : '/api/auth/send-otp';
+
     try {
-      const res = await fetch('/api/auth/send-otp', {
+      const res = await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email })
@@ -45,13 +48,21 @@ export const Login = () => {
     setError('');
     setLoading(true);
 
-    const endpoint = mode === 'login' ? '/api/auth/login' : '/api/auth/register';
-    const body = mode === 'login' 
-      ? { email: email.trim(), password } 
-      : { email: email.trim(), password, name, username, otp: otp.trim() };
+    let endpoint = '';
+    let body = {};
+
+    if (mode === 'login') {
+      endpoint = '/api/auth/login';
+      body = { email: email.trim(), password };
+    } else if (mode === 'register') {
+      endpoint = '/api/auth/register';
+      body = { email: email.trim(), password, name, username, otp: otp.trim() };
+    } else if (mode === 'forgot-password') {
+      endpoint = '/api/auth/reset-password';
+      body = { email: email.trim(), otp: otp.trim(), newPassword };
+    }
 
     try {
-      // If registering, we need to verify OTP first or it's already verified in the register endpoint
       const res = await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -67,8 +78,18 @@ export const Login = () => {
           setEmail('');
           setPassword('');
           setOtp('');
-          // Show success message
           alert('Account created successfully! Please log in.');
+          return;
+        }
+
+        if (mode === 'forgot-password') {
+          setMode('login');
+          setStep('details');
+          setError('');
+          setEmail('');
+          setNewPassword('');
+          setOtp('');
+          alert('Password reset successfully! Please log in with your new password.');
           return;
         }
 
@@ -100,21 +121,25 @@ export const Login = () => {
       >
         <div className="text-center mb-10">
           <div className="inline-flex items-center justify-center w-16 h-16 bg-brand/10 rounded-2xl text-brand mb-6">
-            {mode === 'login' ? <LogIn size={32} /> : <UserPlus size={32} />}
+            {mode === 'login' ? <LogIn size={32} /> : mode === 'register' ? <UserPlus size={32} /> : <Lock size={32} />}
           </div>
           <h1 className="text-3xl font-bold mb-2">
-            {mode === 'login' ? 'Welcome Back' : step === 'details' ? 'Join the Partnership' : 'Verify Email'}
+            {mode === 'login' ? 'Welcome Back' : mode === 'register' ? (step === 'details' ? 'Join the Partnership' : 'Verify Email') : (step === 'details' ? 'Reset Password' : 'Enter Reset Code')}
           </h1>
           <p className="text-gray-400">
             {mode === 'login' 
               ? 'Enter your credentials to access your dashboard' 
-              : step === 'details' 
-                ? 'Create your partner account to start building'
-                : `We've sent a code to ${email}`}
+              : mode === 'register'
+                ? (step === 'details' 
+                  ? 'Create your partner account to start building'
+                  : `We've sent a code to ${email}`)
+                : (step === 'details'
+                  ? 'Enter your email to receive a password reset code'
+                  : `We've sent a reset code to ${email}`)}
           </p>
         </div>
 
-        <form onSubmit={mode === 'register' && step === 'details' ? handleSendOTP : handleSubmit} className="glass-card p-8 rounded-[32px] border border-white/5 space-y-6">
+        <form onSubmit={(mode === 'register' || mode === 'forgot-password') && step === 'details' ? handleSendOTP : handleSubmit} className="glass-card p-8 rounded-[32px] border border-white/5 space-y-6">
           {error && (
             <div className="p-4 bg-red-500/10 border border-red-500/20 rounded-xl text-red-400 text-sm text-center">
               {error}
@@ -155,21 +180,41 @@ export const Login = () => {
             </>
           )}
 
-          {mode === 'register' && step === 'otp' && (
-            <div className="space-y-2">
-              <label className="text-xs font-bold text-gray-500 uppercase ml-1">Verification Code (OTP)</label>
-              <div className="relative">
-                <ShieldCheck className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500" size={18} />
-                <input
-                  required
-                  type="text"
-                  maxLength={6}
-                  value={otp}
-                  onChange={(e) => setOtp(e.target.value.replace(/\D/g, ''))}
-                  className="w-full bg-dark border border-white/10 rounded-xl pl-12 pr-4 py-3.5 focus:border-brand outline-none transition-all text-center tracking-[1em] font-mono text-xl"
-                  placeholder="000000"
-                />
+          {(mode === 'register' || mode === 'forgot-password') && step === 'otp' && (
+            <div className="space-y-6">
+              <div className="space-y-2">
+                <label className="text-xs font-bold text-gray-500 uppercase ml-1">Verification Code (OTP)</label>
+                <div className="relative">
+                  <ShieldCheck className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500" size={18} />
+                  <input
+                    required
+                    type="text"
+                    maxLength={6}
+                    value={otp}
+                    onChange={(e) => setOtp(e.target.value.replace(/\D/g, ''))}
+                    className="w-full bg-dark border border-white/10 rounded-xl pl-12 pr-4 py-3.5 focus:border-brand outline-none transition-all text-center tracking-[1em] font-mono text-xl"
+                    placeholder="000000"
+                  />
+                </div>
               </div>
+
+              {mode === 'forgot-password' && (
+                <div className="space-y-2">
+                  <label className="text-xs font-bold text-gray-500 uppercase ml-1">New Password</label>
+                  <div className="relative">
+                    <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500" size={18} />
+                    <input
+                      required
+                      type="password"
+                      value={newPassword}
+                      onChange={(e) => setNewPassword(e.target.value)}
+                      className="w-full bg-dark border border-white/10 rounded-xl pl-12 pr-4 py-3.5 focus:border-brand outline-none transition-all"
+                      placeholder="••••••••"
+                    />
+                  </div>
+                </div>
+              )}
+
               <div className="flex flex-col gap-2">
                 <p className="text-center">
                   <button 
@@ -212,20 +257,52 @@ export const Login = () => {
                 </div>
               </div>
 
-              <div className="space-y-2">
-                <label className="text-xs font-bold text-gray-500 uppercase ml-1">Password</label>
-                <div className="relative">
-                  <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500" size={18} />
-                  <input
-                    required
-                    type="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className="w-full bg-dark border border-white/10 rounded-xl pl-12 pr-4 py-3.5 focus:border-brand outline-none transition-all"
-                    placeholder="••••••••"
-                  />
+              {mode === 'login' && (
+                <div className="space-y-2">
+                  <div className="flex justify-between items-center ml-1">
+                    <label className="text-xs font-bold text-gray-500 uppercase">Password</label>
+                    <button 
+                      type="button"
+                      onClick={() => {
+                        setMode('forgot-password');
+                        setStep('details');
+                        setError('');
+                      }}
+                      className="text-[10px] text-brand hover:underline font-bold uppercase tracking-wider"
+                    >
+                      Forgot Password?
+                    </button>
+                  </div>
+                  <div className="relative">
+                    <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500" size={18} />
+                    <input
+                      required
+                      type="password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      className="w-full bg-dark border border-white/10 rounded-xl pl-12 pr-4 py-3.5 focus:border-brand outline-none transition-all"
+                      placeholder="••••••••"
+                    />
+                  </div>
                 </div>
-              </div>
+              )}
+
+              {mode === 'register' && (
+                <div className="space-y-2">
+                  <label className="text-xs font-bold text-gray-500 uppercase ml-1">Password</label>
+                  <div className="relative">
+                    <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500" size={18} />
+                    <input
+                      required
+                      type="password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      className="w-full bg-dark border border-white/10 rounded-xl pl-12 pr-4 py-3.5 focus:border-brand outline-none transition-all"
+                      placeholder="••••••••"
+                    />
+                  </div>
+                </div>
+              )}
             </>
           )}
 
@@ -237,7 +314,7 @@ export const Login = () => {
               <div className="w-5 h-5 border-2 border-dark border-t-transparent rounded-full animate-spin" />
             ) : (
               <>
-                {mode === 'login' ? 'Sign In' : step === 'details' ? 'Get Verification Code' : 'Verify & Register'}
+                {mode === 'login' ? 'Sign In' : mode === 'register' ? (step === 'details' ? 'Get Verification Code' : 'Verify & Register') : (step === 'details' ? 'Send Reset Code' : 'Reset Password')}
                 <ArrowRight size={18} />
               </>
             )}
@@ -255,7 +332,9 @@ export const Login = () => {
             >
               {mode === 'login' 
                 ? "Don't have an account? Register here" 
-                : "Already have an account? Sign in"}
+                : mode === 'register' 
+                  ? "Already have an account? Sign in"
+                  : "Back to Sign In"}
             </button>
           </div>
         </form>

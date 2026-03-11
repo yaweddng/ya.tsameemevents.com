@@ -59,6 +59,11 @@ const Inbox = () => {
       setMessages(prev => [...prev, message]);
     });
 
+    newSocket.on('message_error', (data: any) => {
+      console.error('Message error:', data.error);
+      alert('Failed to send message: ' + data.error);
+    });
+
     return () => {
       newSocket.close();
     };
@@ -67,7 +72,7 @@ const Inbox = () => {
   useEffect(() => {
     if (user?.role === 'admin') {
       fetchConversations();
-    } else if (user?.role === 'customer') {
+    } else if (user?.role === 'user' || user?.role === 'customer') {
       // For customers, the "conversation" is always with admin
       setSelectedUser({ id: 'admin', name: 'YA Wedding', email: 'admin@ya.com', last_message: '', last_message_at: '' });
       fetchMessages('admin');
@@ -83,11 +88,26 @@ const Inbox = () => {
       const response = await fetch('/api/admin/conversations', {
         headers: { 'Authorization': `Bearer ${localStorage.getItem('ya_token')}` }
       });
+      
+      if (response.status === 401) {
+        localStorage.removeItem('ya_token');
+        localStorage.removeItem('ya_user');
+        window.location.href = '/login';
+        return;
+      }
+
+      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+      const contentType = response.headers.get("content-type");
+      if (!contentType || !contentType.includes("application/json")) {
+        throw new Error(`Expected JSON but got ${contentType}`);
+      }
+      
       const data = await response.json();
       setConversations(data);
       setLoading(false);
     } catch (error) {
       console.error('Error fetching conversations:', error);
+      setLoading(false);
     }
   };
 
@@ -96,6 +116,20 @@ const Inbox = () => {
       const response = await fetch(`/api/messages/${otherUserId}`, {
         headers: { 'Authorization': `Bearer ${localStorage.getItem('ya_token')}` }
       });
+      
+      if (response.status === 401) {
+        localStorage.removeItem('ya_token');
+        localStorage.removeItem('ya_user');
+        window.location.href = '/login';
+        return;
+      }
+
+      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+      const contentType = response.headers.get("content-type");
+      if (!contentType || !contentType.includes("application/json")) {
+        throw new Error(`Expected JSON but got ${contentType}`);
+      }
+      
       const data = await response.json();
       setMessages(data);
     } catch (error) {

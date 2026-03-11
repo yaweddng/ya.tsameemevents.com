@@ -23,6 +23,18 @@ export const useCMSData = (slug?: string, username?: string) => {
         try {
           const response = await fetch(url, { ...options, signal: controller.signal });
           clearTimeout(id);
+          
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status} for ${url}`);
+          }
+          
+          const contentType = response.headers.get("content-type");
+          if (!contentType || !contentType.includes("application/json")) {
+            const text = await response.text();
+            console.error(`Expected JSON but got ${contentType} for ${url}. Body snippet: ${text.substring(0, 100)}`);
+            throw new Error(`Expected JSON but got ${contentType} for ${url}`);
+          }
+          
           return response;
         } catch (error: any) {
           clearTimeout(id);
