@@ -31,10 +31,15 @@ const Inbox = () => {
   const [newMessage, setNewMessage] = useState('');
   const [socket, setSocket] = useState<Socket | null>(null);
   const [loading, setLoading] = useState(true);
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    if (messagesContainerRef.current) {
+      messagesContainerRef.current.scrollTo({
+        top: messagesContainerRef.current.scrollHeight,
+        behavior: 'smooth'
+      });
+    }
   };
 
   useEffect(() => {
@@ -240,7 +245,7 @@ const Inbox = () => {
             </div>
 
             {/* Messages List */}
-            <div className="flex-grow overflow-y-auto p-6 space-y-4">
+            <div ref={messagesContainerRef} className="flex-grow overflow-y-auto p-6 space-y-4">
               {messages.map((msg, idx) => {
                 const isMe = msg.sender_id === user.id;
                 return (
@@ -264,7 +269,6 @@ const Inbox = () => {
                   </motion.div>
                 );
               })}
-              <div ref={messagesEndRef} />
             </div>
 
             {/* Message Input */}
