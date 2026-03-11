@@ -2,6 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { LogIn, UserPlus, Mail, Lock, User, ArrowRight, ShieldCheck } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../hooks/useAuth';
 
 export const Login = () => {
   const [mode, setMode] = React.useState<'login' | 'register' | 'forgot-password'>('login');
@@ -15,6 +16,7 @@ export const Login = () => {
   const [error, setError] = React.useState('');
   const [loading, setLoading] = React.useState(false);
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const handleSendOTP = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -93,8 +95,7 @@ export const Login = () => {
           return;
         }
 
-        localStorage.setItem('ya_token', data.token || `user-token-${data.user.id}`);
-        localStorage.setItem('ya_user', JSON.stringify(data.user));
+        login(data.user, data.token || `user-token-${data.user.id}`);
         
         navigate('/inbox');
       } else {

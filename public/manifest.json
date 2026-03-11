@@ -35,15 +35,26 @@
       "purpose": "any maskable"
     }
   ],
-  "widgets": [
-    {
-      "name": "Upcoming Event",
-      "description": "View your next scheduled wedding consultation",
-      "tag": "upcoming-event",
-      "ms_ac_template": "widget-template.json",
-      "icons": [{ "src": "/favicon.svg", "sizes": "192x192" }]
-    }
-  ],
+  "widgets": {
+    "values": [
+      {
+        "name": "Upcoming Event",
+        "description": "View your next scheduled wedding consultation",
+        "tag": "upcoming-event",
+        "ms_ac_template": "widget-template.json",
+        "icons": [{ "src": "/favicon.svg", "sizes": "192x192" }]
+      }
+    ]
+  },
+  "prefer_related_applications": false,
+  "related_applications": [],
+  "iarc_rating_id": "",
+  "edge_side_panel": { "enabled": true },
+  "note_taking": { "enabled": true },
+  "scope": "/",
+  "lang": "en",
+  "dir": "ltr",
+  "scope_extensions": [],
   "categories": ["lifestyle", "business"],
   "shortcuts": [
     {

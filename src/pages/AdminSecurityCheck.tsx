@@ -125,7 +125,7 @@ export const AdminSecurityCheck = () => {
       <motion.div 
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="w-full max-w-md relative z-10"
+        className="w-full max-w-sm relative z-10"
       >
         <div className="glass-card p-8 rounded-[2.5rem] border-brand/20 border-2 shadow-2xl shadow-brand/10">
           <div className="flex justify-center mb-8">

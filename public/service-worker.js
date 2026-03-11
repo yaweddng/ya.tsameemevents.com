@@ -93,16 +93,54 @@ self.addEventListener('fetch', (event) => {
 // Background Sync Event
 self.addEventListener('sync', (event) => {
   if (event.tag === 'sync-bookings') {
-    console.log('Service Worker: Syncing bookings...');
-    // Logic to send queued bookings to server
+    event.waitUntil(
+      new Promise((resolve, reject) => {
+        const request = indexedDB.open('ya-wedding-db', 1);
+        request.onsuccess = (e: any) => {
+          const db = e.target.result;
+          const transaction = db.transaction('bookings', 'readwrite');
+          const store = transaction.objectStore('bookings');
+          const getAllRequest = store.getAll();
+
+          getAllRequest.onsuccess = () => {
+            const bookings = getAllRequest.result;
+            if (bookings.length === 0) {
+              resolve();
+              return;
+            }
+
+            // Send bookings to server
+            Promise.all(bookings.map((booking: any) => 
+              fetch('/api/bookings', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(booking)
+              })
+            )).then(() => {
+              // Clear store
+              store.clear();
+              resolve();
+            }).catch(reject);
+          };
+        };
+        request.onerror = reject;
+      })
+    );
   }
 });
 
 // Periodic Sync Event
 self.addEventListener('periodicsync', (event) => {
   if (event.tag === 'update-content') {
-    console.log('Service Worker: Periodic content update...');
-    // Logic to pre-fetch new content
+    event.waitUntil(
+      fetch('/api/content/update')
+        .then(response => response.json())
+        .then(data => {
+          // Cache new content
+          const cache = caches.open(CACHE_NAME);
+          cache.then(c => c.put('/content', new Response(JSON.stringify(data))));
+        })
+    );
   }
 });
 

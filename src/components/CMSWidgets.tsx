@@ -660,7 +660,7 @@ export const CMSWidgets: React.FC<CMSWidgetsProps> = ({ slug, excludeTypes = [] 
                     <div className="pt-2 md:pt-4">
                       <button 
                         onClick={() => window.dispatchEvent(new Event('show-pwa-install'))}
-                        className="w-full bg-brand text-dark px-2 py-1.5 md:px-6 md:py-3 rounded-lg md:rounded-xl text-[10px] md:text-sm font-bold flex items-center justify-center gap-1 md:gap-2 hover:scale-[1.02] transition-transform"
+                        className="w-full bg-brand text-dark px-2 py-1.5 md:px-6 md:py-3 rounded-lg md:rounded-xl text-[10px] md:text-sm font-bold flex items-center justify-center gap-1 md:gap-2 hover:scale-[1.02] transition-transform hover:opacity-90"
                       >
                         <Download size={12} />
                         Install

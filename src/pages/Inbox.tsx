@@ -32,6 +32,7 @@ const Inbox = () => {
   const [socket, setSocket] = useState<Socket | null>(null);
   const [loading, setLoading] = useState(true);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
+  const notificationSound = useRef(new Audio('https://actions.google.com/sounds/v1/notifications/beep_short.ogg'));
 
   const scrollToBottom = () => {
     if (messagesContainerRef.current) {
@@ -51,6 +52,7 @@ const Inbox = () => {
     newSocket.emit('join', user.id);
 
     newSocket.on('new_message', (message: Message) => {
+      notificationSound.current.play().catch(e => console.error("Error playing sound:", e));
       if (selectedUser && (message.sender_id === selectedUser.id || message.receiver_id === selectedUser.id)) {
         setMessages(prev => [...prev, message]);
       }

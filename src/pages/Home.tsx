@@ -140,7 +140,8 @@ export const Home = () => {
               </Link>
               <Link
                 to="/mobile-app"
-                className="relative group overflow-hidden border border-white/20 bg-white/5 backdrop-blur-md hover:border-brand/50 px-10 py-4 rounded-2xl font-bold text-lg transition-all text-center flex items-center justify-center gap-2"
+                onClick={() => window.dispatchEvent(new Event('show-pwa-install'))}
+                className="relative group overflow-hidden border border-white/20 bg-white/5 backdrop-blur-md hover:border-brand/50 hover:bg-brand/20 px-10 py-4 rounded-2xl font-bold text-lg transition-all text-center flex items-center justify-center gap-2"
               >
                 <Smartphone size={20} className="text-brand" />
                 <span>Get Mobile App</span>
