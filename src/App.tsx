@@ -150,8 +150,23 @@ function AppContent() {
 
   if (siteLoading) return <div className="min-h-screen bg-dark flex items-center justify-center text-brand font-bold">Initializing Platform...</div>;
 
+  const organizationSchema = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "YA Wedding",
+    "url": "https://yawedding.tsameemevents.com",
+    "logo": "https://yawedding.tsameemevents.com/favicon.svg",
+    "sameAs": [
+      "https://www.facebook.com/yawedding",
+      "https://www.instagram.com/yawedding"
+    ]
+  };
+
   return (
     <HelmetProvider>
+      <Helmet>
+        <script type="application/ld+json">{JSON.stringify(organizationSchema)}</script>
+      </Helmet>
       <Router>
         <ScrollToTop />
         <div className="min-h-screen flex flex-col">

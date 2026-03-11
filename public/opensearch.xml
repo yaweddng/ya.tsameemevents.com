@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/">
+  <ShortName>YA Wedding</ShortName>
+  <LongName>Search YA Wedding</LongName>
+  <Description>Search for luxury wedding services and blog posts on YA Wedding.</Description>
+  <InputEncoding>UTF-8</InputEncoding>
+  <OutputEncoding>UTF-8</OutputEncoding>
+  <AdultContent>false</AdultContent>
+  <Image width="16" height="16" type="image/x-icon">https://yawedding.tsameemevents.com/favicon.ico</Image>
+  <Url type="text/html" method="get" template="https://yawedding.tsameemevents.com/search?query={searchTerms}"/>
+</OpenSearchDescription>
