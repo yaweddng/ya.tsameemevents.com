@@ -32,7 +32,7 @@ const Inbox = () => {
   const [socket, setSocket] = useState<Socket | null>(null);
   const [loading, setLoading] = useState(true);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
-  const notificationSound = useRef(new Audio('https://actions.google.com/sounds/v1/notifications/beep_short.ogg'));
+  const notificationSound = useRef(new Audio('https://tsameemevents.com/wp-content/uploads/notification-sound.mp3'));
 
   const scrollToBottom = () => {
     if (messagesContainerRef.current) {
@@ -43,8 +43,35 @@ const Inbox = () => {
     }
   };
 
+  const subscribeToPush = async (userId: string) => {
+    if ('serviceWorker' in navigator) {
+      try {
+        const registration = await navigator.serviceWorker.ready;
+        const subscription = await registration.pushManager.subscribe({
+          userVisibleOnly: true,
+          applicationServerKey: 'BAmbzv49ncwG3KaUwfeEmHRL0iRyBNR9Rq-0ckgs98qCp_-OsesHTgWzFmAOImUFVDuxQHFdWHTUNUD2wbeGP6g'
+        });
+
+        await fetch('/api/push/subscribe', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ subscription, userId })
+        });
+      } catch (error) {
+        console.error('Push subscription failed:', error);
+      }
+    }
+  };
+
   useEffect(() => {
     if (!user) return;
+
+    // Request notification permission
+    if ('Notification' in window && Notification.permission === 'default') {
+      Notification.requestPermission();
+    }
+
+    subscribeToPush(user.id);
 
     const newSocket = io(window.location.origin);
     setSocket(newSocket);
@@ -52,7 +79,19 @@ const Inbox = () => {
     newSocket.emit('join', user.id);
 
     newSocket.on('new_message', (message: Message) => {
+      // Play sound
       notificationSound.current.play().catch(e => console.error("Error playing sound:", e));
+
+      // Show local notification if not focused on this chat
+      if (document.hidden || !selectedUser || (message.sender_id !== selectedUser.id && message.receiver_id !== selectedUser.id)) {
+        if ('Notification' in window && Notification.permission === 'granted') {
+          new Notification('New Message', {
+            body: message.content,
+            icon: '/favicon.svg'
+          });
+        }
+      }
+
       if (selectedUser && (message.sender_id === selectedUser.id || message.receiver_id === selectedUser.id)) {
         setMessages(prev => [...prev, message]);
       }

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'platform-cache-v2';
+const CACHE_NAME = 'platform-cache-v3';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
@@ -146,15 +146,27 @@ self.addEventListener('periodicsync', (event) => {
 
 // Push Event - Handle push notifications
 self.addEventListener('push', (event) => {
-  const data = event.data ? event.data.json() : {};
+  let data = {};
+  try {
+    data = event.data ? event.data.json() : {};
+  } catch (e) {
+    console.error('Push data parse error:', e);
+    data = { title: 'YA Wedding', body: event.data ? event.data.text() : 'New update!' };
+  }
+
   const title = data.title || 'YA Wedding';
   const options = {
     body: data.body || 'New update from YA Wedding!',
     icon: '/favicon.svg',
     badge: '/favicon.svg',
+    vibrate: [100, 50, 100],
     data: {
-      url: data.url || '/'
-    }
+      url: data.url || '/inbox'
+    },
+    actions: [
+      { action: 'open', title: 'View Message' },
+      { action: 'close', title: 'Close' }
+    ]
   };
 
   event.waitUntil(
@@ -165,7 +177,24 @@ self.addEventListener('push', (event) => {
 // Notification Click Event
 self.addEventListener('notificationclick', (event) => {
   event.notification.close();
+
+  if (event.action === 'close') return;
+
+  const urlToOpen = event.notification.data.url || '/';
+
   event.waitUntil(
-    self.clients.openWindow(event.notification.data.url)
+    self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then((windowClients) => {
+      // Check if there is already a window open and focus it
+      for (let i = 0; i < windowClients.length; i++) {
+        const client = windowClients[i];
+        if (client.url.includes(urlToOpen) && 'focus' in client) {
+          return client.focus();
+        }
+      }
+      // If no window is open, open a new one
+      if (self.clients.openWindow) {
+        return self.clients.openWindow(urlToOpen);
+      }
+    })
   );
 });

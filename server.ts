@@ -8,6 +8,7 @@ import { fileURLToPath } from "url";
 import nodemailer from "nodemailer";
 import bcrypt from "bcryptjs";
 import dns from "dns";
+import webpush from "web-push";
 import db from "./src/db.ts";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -25,6 +26,12 @@ async function startServer() {
   const PORT = 3000;
 
   app.use(express.json());
+
+  webpush.setVapidDetails(
+    process.env.VAPID_SUBJECT || 'mailto:info@tsameemevents.com',
+    process.env.VAPID_PUBLIC_KEY || 'BAmbzv49ncwG3KaUwfeEmHRL0iRyBNR9Rq-0ckgs98qCp_-OsesHTgWzFmAOImUFVDuxQHFdWHTUNUD2wbeGP6g',
+    process.env.VAPID_PRIVATE_KEY || 'w5gfsBXvZ60xD74Gj7aKIfE_aNIaGYRiFf7PuoMZ3Gg'
+  );
 
   const transporter = nodemailer.createTransport({
     host: process.env.SMTP_HOST || 'smtp.hostinger.com',
@@ -125,6 +132,11 @@ async function startServer() {
   }, 5 * 60 * 1000); // Check every 5 minutes
 
   // API Routes
+  const SERVER_VERSION = Date.now().toString();
+  app.get("/api/version", (req, res) => {
+    res.json({ version: SERVER_VERSION });
+  });
+
   const SERVICES_PATH = path.join(__dirname, "src/data/services.json");
   const BLOGS_PATH = path.join(__dirname, "src/data/blogs.json");
   const SETTINGS_PATH = path.join(__dirname, "src/data/settings.json");
@@ -181,6 +193,28 @@ async function startServer() {
         io.to(receiverId).emit("new_message", newMessage);
         // Emit back to sender for confirmation
         io.to(senderId).emit("message_sent", newMessage);
+
+        // Send push notification to receiver
+        const subscriptions = db.prepare("SELECT subscription FROM push_subscriptions WHERE user_id = ?").all(receiverId) as any[];
+        const sender = db.prepare("SELECT name FROM users WHERE id = ?").get(senderId) as any;
+
+        subscriptions.forEach(sub => {
+          try {
+            const pushSubscription = JSON.parse(sub.subscription);
+            webpush.sendNotification(pushSubscription, JSON.stringify({
+              title: `New message from ${sender?.name || 'User'}`,
+              body: content,
+              url: '/inbox'
+            })).catch(err => {
+              if (err.statusCode === 404 || err.statusCode === 410) {
+                // Subscription has expired or is no longer valid
+                db.prepare("DELETE FROM push_subscriptions WHERE subscription = ?").run(sub.subscription);
+              }
+            });
+          } catch (e) {
+            console.error("Push notification error:", e);
+          }
+        });
       } catch (error) {
         console.error("Error sending message:", error);
         socket.emit("message_error", { error: "Failed to send message" });
@@ -193,6 +227,25 @@ async function startServer() {
   });
 
   // OTP and Messaging API Routes
+  app.post("/api/push/subscribe", (req, res) => {
+    const { subscription, userId } = req.body;
+    if (!userId) return res.status(400).json({ error: "User ID required" });
+    
+    try {
+      // Check if subscription already exists for this user to avoid duplicates
+      const subStr = JSON.stringify(subscription);
+      const existing = db.prepare("SELECT id FROM push_subscriptions WHERE user_id = ? AND subscription = ?").get(userId, subStr);
+      
+      if (!existing) {
+        db.prepare("INSERT INTO push_subscriptions (user_id, subscription) VALUES (?, ?)").run(userId, subStr);
+      }
+      res.status(201).json({ success: true });
+    } catch (e) {
+      console.error("Subscription error:", e);
+      res.status(500).json({ error: "Failed to subscribe" });
+    }
+  });
+
   app.post("/api/auth/send-otp", async (req, res) => {
     const { email: rawEmail } = req.body;
     const email = rawEmail?.toLowerCase().trim();

@@ -47,6 +47,14 @@ db.exec(`
     FOREIGN KEY (receiver_id) REFERENCES users(id)
   );
 
+  CREATE TABLE IF NOT EXISTS push_subscriptions (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id TEXT,
+    subscription TEXT,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id)
+  );
+
   CREATE TABLE IF NOT EXISTS otps (
     email TEXT PRIMARY KEY,
     otp TEXT,
