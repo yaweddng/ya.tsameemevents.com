@@ -96,7 +96,7 @@ self.addEventListener('sync', (event) => {
     event.waitUntil(
       new Promise((resolve, reject) => {
         const request = indexedDB.open('ya-wedding-db', 1);
-        request.onsuccess = (e: any) => {
+        request.onsuccess = (e) => {
           const db = e.target.result;
           const transaction = db.transaction('bookings', 'readwrite');
           const store = transaction.objectStore('bookings');
@@ -110,7 +110,7 @@ self.addEventListener('sync', (event) => {
             }
 
             // Send bookings to server
-            Promise.all(bookings.map((booking: any) => 
+            Promise.all(bookings.map((booking) => 
               fetch('/api/bookings', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },

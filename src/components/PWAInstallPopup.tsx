@@ -119,6 +119,23 @@ export const PWAInstallPopup = () => {
                     Not now
                   </button>
                 </div>
+                <div className="mt-4">
+                  <button
+                    onClick={async () => {
+                      if (confirm('Are you sure you want to clear all app data? This will log you out and remove all cached data.')) {
+                        localStorage.clear();
+                        const databases = await indexedDB.databases();
+                        databases.forEach(db => { if (db.name) indexedDB.deleteDatabase(db.name); });
+                        const cacheNames = await caches.keys();
+                        await Promise.all(cacheNames.map(name => caches.delete(name)));
+                        window.location.reload();
+                      }
+                    }}
+                    className="w-full text-xs text-red-500 hover:text-red-400 underline"
+                  >
+                    Clear App Data
+                  </button>
+                </div>
               </>
             ) : (
               <motion.div

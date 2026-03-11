@@ -178,6 +178,13 @@ export const Header = () => {
                   <span className="relative z-10">{cta.label}</span>
                 </Link>
               ))}
+              {/* Logout Button (Desktop) */}
+              <button 
+                onClick={() => { localStorage.removeItem('ya_token'); localStorage.removeItem('ya_user'); window.location.href = '/'; }}
+                className="text-gray-400 hover:text-red-500 transition-colors"
+              >
+                <Icons.LogOut size={20} />
+              </button>
             </div>
           </div>
 
@@ -311,6 +318,13 @@ export const Header = () => {
                     </div>
                   </Link>
                 ))}
+                {/* Logout Button (Mobile) */}
+                <button 
+                  onClick={() => { localStorage.removeItem('ya_token'); localStorage.removeItem('ya_user'); window.location.href = '/'; }}
+                  className="block w-full text-center py-4 rounded-xl font-bold transition-all border border-red-500/20 text-red-500 hover:bg-red-500/10"
+                >
+                  Logout
+                </button>
               </div>
             </div>
           </motion.div>

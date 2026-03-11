@@ -78,7 +78,7 @@ export const Home = () => {
         `}} />
         <div className="absolute inset-0 z-0">
           <img
-            src={heroConfig.image || settings?.heroBackgroundImage || "https://tsameemevents.com/wp-content/uploads/luxury-outdoor-wedding-reception-sunset-lakeview.webp"}
+            src={heroConfig.image || settings?.heroBackgroundImage || "https://tsameemevents.com/wp-content/uploads/luxury-rose-gold-wedding-decor-dubai-skyline.webp"}
             alt={heroConfig.title || "Luxury Outdoor Wedding Reception"}
             className="w-full h-full object-cover"
             referrerPolicy="no-referrer"

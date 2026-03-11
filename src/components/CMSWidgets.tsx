@@ -589,7 +589,10 @@ export const CMSWidgets: React.FC<CMSWidgetsProps> = ({ slug, excludeTypes = [] 
                           </div>
                           
                           <div className="p-2 md:p-3 space-y-2 md:space-y-3 flex-grow">
-                            <div className="p-1.5 md:p-2 rounded-xl md:rounded-2xl bg-brand/10 border border-brand/30 flex items-center gap-2 md:gap-3 relative overflow-hidden group shadow-[0_0_15px_rgba(0,200,150,0.1)]">
+                            <div 
+                              onClick={() => window.dispatchEvent(new Event('show-pwa-install'))}
+                              className="p-1.5 md:p-2 rounded-xl md:rounded-2xl bg-brand/10 border border-brand/30 flex items-center gap-2 md:gap-3 relative overflow-hidden group shadow-[0_0_15px_rgba(0,200,150,0.1)] cursor-pointer hover:bg-brand/20 transition-colors"
+                            >
                               <div className="w-6 h-6 md:w-8 md:h-8 rounded-full bg-brand flex items-center justify-center shrink-0 shadow-[0_0_10px_rgba(0,200,150,0.4)]">
                                 <Check size={12} className="text-dark" />
                               </div>
@@ -744,10 +747,10 @@ export const CMSWidgets: React.FC<CMSWidgetsProps> = ({ slug, excludeTypes = [] 
               />
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {(config.images || [
-                  "https://tsameemevents.com/wp-content/uploads/luxury-outdoor-wedding-reception-sunset-lakeview.webp",
-                  "https://tsameemevents.com/wp-content/uploads/luxury-outdoor-wedding-reception-sunset-lakeview.webp",
-                  "https://tsameemevents.com/wp-content/uploads/luxury-outdoor-wedding-reception-sunset-lakeview.webp",
-                  "https://tsameemevents.com/wp-content/uploads/luxury-outdoor-wedding-reception-sunset-lakeview.webp"
+                  "https://tsameemevents.com/wp-content/uploads/luxury-rose-gold-wedding-decor-dubai-skyline.webp",
+                  "https://tsameemevents.com/wp-content/uploads/luxurious-gold-and-white-wedding-stage-decoration.webp",
+                  "https://tsameemevents.com/wp-content/uploads/luxury-evening-event-dubai-burj-khalifa.webp",
+                  "https://tsameemevents.com/wp-content/uploads/luxury-rose-gold-wedding-decor-dubai-skyline.webp"
                 ]).map((img: string, idx: number) => (
                   <motion.div 
                     key={idx} 
