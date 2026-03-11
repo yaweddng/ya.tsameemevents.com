@@ -1,0 +1,49 @@
+{
+  "forms": [
+    {
+      "id": "default-booking",
+      "name": "Standard Event Booking",
+      "description": "Our standard multi-step booking form for all events.",
+      "steps": [
+        {
+          "id": "event-details",
+          "title": "Event Details",
+          "description": "Tell us about your upcoming event.",
+          "fields": [
+            { "id": "event-type", "label": "Event Type", "type": "select", "options": ["Wedding", "Corporate", "Private Party", "Exhibition"], "required": true, "width": "half" },
+            { "id": "event-date", "label": "Event Date", "type": "date", "required": true, "width": "half" },
+            { "id": "guest-count", "label": "Expected Guests", "type": "number", "required": true, "width": "half" },
+            { "id": "location", "label": "Venue/Location", "type": "text", "placeholder": "Dubai, UAE", "width": "half" }
+          ]
+        },
+        {
+          "id": "contact-info",
+          "title": "Contact Information",
+          "description": "How can we reach you?",
+          "fields": [
+            { "id": "full-name", "label": "Full Name", "type": "text", "required": true, "width": "full" },
+            { "id": "email", "label": "Email Address", "type": "email", "required": true, "width": "half" },
+            { "id": "phone", "label": "Phone Number", "type": "tel", "required": true, "width": "half" }
+          ]
+        }
+      ],
+      "pdfConfig": {
+        "logo": "https://ya.tssmeemevents.com/logo.png",
+        "primaryColor": "#00C896",
+        "secondaryColor": "#141414",
+        "fontFamily": "Inter",
+        "headerText": "Event Proposal",
+        "footerText": "Thank you for choosing Tsameem Events.",
+        "showPricing": true,
+        "showTerms": true,
+        "termsContent": "Standard terms and conditions apply.",
+        "brandingDesign": {
+          "accentStyle": "elegant"
+        }
+      },
+      "successMessage": "Thank you! Your booking request has been received. We will contact you shortly.",
+      "createdAt": "2024-01-01T00:00:00Z",
+      "updatedAt": "2024-01-01T00:00:00Z"
+    }
+  ]
+}

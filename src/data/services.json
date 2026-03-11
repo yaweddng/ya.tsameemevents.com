@@ -1,0 +1,416 @@
+{
+  "services": [
+    {
+      "id": "full-wedding-planning",
+      "name": "Full Wedding Planning",
+      "price": 22000,
+      "oldPrice": 25000,
+      "discount": "12%",
+      "currency": "AED",
+      "category": "Planning",
+      "badge": "Best Seller",
+      "image": "https://tsameemevents.com/wp-content/uploads/working-on-wedding-stage-deocration-in-a-wedding-arch-in-dubai.webp",
+      "description": "Comprehensive wedding planning from concept to execution. We handle every detail so you can enjoy your special day.",
+      "shortDescription": "End-to-end luxury wedding planning in Dubai.",
+      "tags": ["Luxury", "Planning", "Dubai Wedding"],
+      "serviceAreas": ["Dubai", "Abu Dhabi", "Sharjah", "All UAE"],
+      "features": ["Venue Selection", "Vendor Management", "Budget Planning", "On-day Coordination"],
+      "seoDescription": "Luxury wedding planning services in Dubai. From venue selection to on-day coordination, we handle every detail for your perfect day.",
+      "rating": 4.9,
+      "reviewCount": 1240,
+      "faqs": [
+        {
+          "question": "What is included in full wedding planning?",
+          "answer": "Our full wedding planning includes venue selection, vendor management, budget planning, design concept, and on-day coordination."
+        },
+        {
+          "question": "How far in advance should I book?",
+          "answer": "We recommend booking at least 6-12 months in advance for luxury weddings in Dubai to secure the best venues and vendors."
+        }
+      ],
+      "bookingOptions": [
+        { "label": "Expected Guest Count", "type": "number", "required": true },
+        { "label": "Event Date", "type": "date", "required": true },
+        { "label": "Venue Type", "type": "select", "options": ["Hotel Ballroom", "Outdoor/Garden", "Private Villa", "Other"], "required": true }
+      ]
+    },
+    {
+      "id": "wedding-stage-decor",
+      "name": "Wedding Stage & Themed Decorations",
+      "price": 9000,
+      "oldPrice": 11000,
+      "discount": "18%",
+      "currency": "AED",
+      "category": "Decoration",
+      "badge": "Trending",
+      "image": "https://tsameemevents.com/wp-content/uploads/luxurious-gold-and-white-wedding-stage-decoration.webp",
+      "description": "Exquisite stage designs and themed decorations that reflect your personal style and luxury.",
+      "shortDescription": "Custom luxury stage and theme decorations.",
+      "tags": ["Decoration", "Stage", "Theme"],
+      "serviceAreas": ["Dubai", "Sharjah", "Ajman", "All UAE"],
+      "features": ["Custom Backdrop", "Floral Arrangements", "Lighting Design", "Furniture Setup"],
+      "seoDescription": "Exquisite wedding stage and themed decorations in Dubai. Custom backdrops, floral arrangements, and luxury designs.",
+      "rating": 5.0,
+      "reviewCount": 897,
+      "faqs": [
+        {
+          "question": "Can I customize the stage design?",
+          "answer": "Yes, all our stage designs are fully customizable to match your theme, colors, and venue requirements."
+        },
+        {
+          "question": "Do you provide floral arrangements for the stage?",
+          "answer": "Absolutely. We offer both fresh and high-quality artificial floral arrangements as part of our stage decoration services."
+        }
+      ],
+      "bookingOptions": [
+        { "label": "Theme Color", "type": "text", "required": true },
+        { "label": "Stage Size", "type": "select", "options": ["Small (4-6m)", "Medium (8-10m)", "Large (12m+)", "Custom"], "required": true },
+        { "label": "Event Date", "type": "date", "required": true }
+      ]
+    },
+    {
+      "id": "wedding-rentals",
+      "name": "Wedding Rentals",
+      "price": 55,
+      "currency": "AED",
+      "category": "Rentals",
+      "badge": "Price Drop",
+      "image": "https://tsameemevents.com/wp-content/uploads/luxury-arabic-night-event-tent-setup.webp",
+      "description": "High-quality rentals including chairs, tables, tents, and props for any event size.",
+      "shortDescription": "Premium event rentals for all occasions.",
+      "tags": ["Rentals", "Furniture", "Tents"],
+      "serviceAreas": ["Dubai", "Sharjah", "All UAE"],
+      "features": ["Chairs (from 55 AED)", "Tables (from 100 AED)", "Tents (from 2000 AED)", "Props (from 300 AED)"],
+      "seoDescription": "Premium wedding and event rentals in Dubai. High-quality chairs, tables, tents, and props for any occasion.",
+      "rating": 4.8,
+      "reviewCount": 3450,
+      "bookingOptions": [
+        { "label": "Rental Items", "type": "text", "required": true },
+        { "label": "Quantity", "type": "number", "required": true },
+        { "label": "Delivery Date", "type": "date", "required": true }
+      ]
+    },
+    {
+      "id": "wedding-cards",
+      "name": "Wedding Cards & Invitations",
+      "price": 20,
+      "currency": "AED",
+      "category": "Stationery",
+      "image": "https://tsameemevents.com/wp-content/uploads/luxury-islamic-wedding-stationery-allah-calligraphy-gold-cream.webp",
+      "description": "Luxury stationery and custom invitations to set the perfect tone for your wedding.",
+      "shortDescription": "Elegant custom wedding invitations.",
+      "tags": ["Stationery", "Cards", "Invitations"],
+      "serviceAreas": ["All UAE"],
+      "features": ["Custom Design", "Premium Paper", "Calligraphy", "Envelope Sealing"],
+      "seoDescription": "Luxury wedding invitations and stationery in Dubai. Custom designs, premium paper, and elegant calligraphy.",
+      "rating": 4.9,
+      "reviewCount": 560,
+      "bookingOptions": [
+        { "label": "Number of Cards", "type": "number", "required": true },
+        { "label": "Paper Quality", "type": "select", "options": ["Standard Luxury", "Premium Velvet", "Handmade Silk"], "required": true }
+      ]
+    },
+    {
+      "id": "photography-videography",
+      "name": "Photography & Videography",
+      "price": 1000,
+      "currency": "AED",
+      "category": "Media",
+      "badge": "Best Seller",
+      "image": "https://tsameemevents.com/wp-content/uploads/luxury-wedding-reception-bride-groom-floral-decor.webp",
+      "description": "Capturing your most precious moments with professional cinematic photography and videography.",
+      "shortDescription": "Professional cinematic wedding media services.",
+      "tags": ["Photography", "Videography", "Media"],
+      "serviceAreas": ["Dubai", "Abu Dhabi", "All UAE"],
+      "features": ["High-Res Photos", "Cinematic Highlight Reel", "Drone Shots", "Digital Gallery"],
+      "seoDescription": "Professional wedding photography and videography in Dubai. Cinematic storytelling and high-resolution memories.",
+      "rating": 5.0,
+      "reviewCount": 1120,
+      "bookingOptions": [
+        { "label": "Hours of Coverage", "type": "number", "required": true },
+        { "label": "Event Type", "type": "select", "options": ["Full Wedding", "Engagement", "Henna Night", "Pre-Wedding Shoot"], "required": true }
+      ]
+    },
+    {
+      "id": "dj-services",
+      "name": "Dance Stage & DJ Services",
+      "price": 3000,
+      "currency": "AED",
+      "category": "Entertainment",
+      "image": "https://tsameemevents.com/wp-content/uploads/romantic-birthday-celebration-dubai-skyline-view.webp",
+      "description": "Professional DJ and sound systems to keep the energy high and the dance floor full.",
+      "shortDescription": "Top-tier DJ and sound services for events.",
+      "tags": ["DJ", "Music", "Entertainment"],
+      "serviceAreas": ["Dubai", "Sharjah", "All UAE"],
+      "features": ["Professional DJ", "Sound System", "Dance Floor Lighting", "Custom Playlist"],
+      "seoDescription": "Top-tier DJ and sound services for weddings and events in Dubai. Professional entertainment and lighting.",
+      "rating": 4.7,
+      "reviewCount": 430,
+      "bookingOptions": [
+        { "label": "Music Genre Preference", "type": "text", "required": true },
+        { "label": "Duration (Hours)", "type": "number", "required": true }
+      ]
+    },
+    {
+      "id": "house-lighting",
+      "name": "Wedding House Lighting",
+      "price": 1500,
+      "currency": "AED",
+      "category": "Lighting",
+      "image": "https://tsameemevents.com/wp-content/uploads/luxury-outdoor-wedding-mansion-decor.webp",
+      "description": "Transform your home or venue with elegant decorative lighting solutions.",
+      "shortDescription": "Elegant decorative lighting for homes and venues.",
+      "tags": ["Lighting", "Decor", "Home Lighting"],
+      "serviceAreas": ["Dubai", "Sharjah", "Ajman", "All UAE"],
+      "features": ["Fairy Lights", "Architectural Lighting", "Garden Illumination", "Safe Installation"],
+      "seoDescription": "Elegant wedding house lighting in Dubai. Transform your villa or venue with decorative lighting solutions.",
+      "rating": 4.8,
+      "reviewCount": 210,
+      "bookingOptions": [
+        { "label": "House Type", "type": "select", "options": ["Villa", "Apartment", "Mansion", "Outdoor Garden"], "required": true },
+        { "label": "Lighting Style", "type": "select", "options": ["Warm White", "Cool White", "Multi-Color", "Themed"], "required": true }
+      ]
+    },
+    {
+      "id": "catering-henna",
+      "name": "Catering & Henna Night",
+      "price": 3000,
+      "currency": "AED",
+      "category": "Catering",
+      "image": "https://tsameemevents.com/wp-content/uploads/luxury-outdoor-wedding-reception-tent-chandeliers.webp",
+      "description": "Traditional and international catering options paired with beautiful henna night setups.",
+      "shortDescription": "Exquisite catering and traditional henna setups.",
+      "tags": ["Catering", "Henna", "Traditional"],
+      "serviceAreas": ["Dubai", "Sharjah", "All UAE"],
+      "features": ["Buffet Service", "Henna Artists", "Traditional Decor", "Custom Menu"],
+      "seoDescription": "Luxury catering and henna night services in Dubai. Traditional setups and exquisite international cuisine.",
+      "rating": 4.9,
+      "reviewCount": 780,
+      "bookingOptions": [
+        { "label": "Cuisine Type", "type": "select", "options": ["Arabic", "International", "Indian", "Fusion"], "required": true },
+        { "label": "Number of Henna Artists", "type": "number", "required": true }
+      ]
+    },
+    {
+      "id": "guest-hospitality",
+      "name": "Guest Welcoming & Hospitality",
+      "price": 2000,
+      "currency": "AED",
+      "category": "Hospitality",
+      "image": "https://tsameemevents.com/wp-content/uploads/luxury-event-hospitality-team-dubai-burj-al-arab.webp",
+      "description": "Professional hospitality teams to ensure your guests feel welcomed and cared for.",
+      "shortDescription": "Professional event hospitality and guest welcoming.",
+      "tags": ["Hospitality", "Hostesses", "Guest Service"],
+      "serviceAreas": ["Dubai", "Abu Dhabi", "All UAE"],
+      "features": ["Hostesses", "Valet Service", "Welcome Drinks", "Guest Assistance"],
+      "seoDescription": "Professional event hospitality and guest welcoming services in Dubai. Hostesses and valet for luxury events.",
+      "rating": 5.0,
+      "reviewCount": 150,
+      "bookingOptions": [
+        { "label": "Number of Staff Needed", "type": "number", "required": true },
+        { "label": "Service Duration (Hours)", "type": "number", "required": true }
+      ]
+    },
+    {
+      "id": "corporate-events",
+      "name": "Corporate Event Planning",
+      "price": 8000,
+      "currency": "AED",
+      "category": "Corporate",
+      "badge": "Trending",
+      "image": "https://tsameemevents.com/wp-content/uploads/futuristic-rose-gold-exhibition-showroom-design-1.webp",
+      "description": "Strategic planning and execution for corporate galas, launches, and exhibitions.",
+      "shortDescription": "Strategic corporate event planning and execution.",
+      "tags": ["Corporate", "Events", "Planning"],
+      "serviceAreas": ["Dubai", "Abu Dhabi", "All UAE"],
+      "features": ["Brand Integration", "AV Production", "Logistics", "Exhibition Design"],
+      "seoDescription": "Strategic corporate event planning in Dubai. Galas, product launches, and exhibition design services.",
+      "rating": 4.9,
+      "reviewCount": 320,
+      "bookingOptions": [
+        { "label": "Event Type", "type": "select", "options": ["Product Launch", "Award Ceremony", "Exhibition", "Conference"], "required": true },
+        { "label": "Expected Attendance", "type": "number", "required": true }
+      ]
+    },
+    {
+      "id": "birthday-party-planning",
+      "name": "Birthday Party Planning",
+      "price": 2500,
+      "currency": "AED",
+      "category": "Planning",
+      "image": "https://tsameemevents.com/wp-content/uploads/romantic-birthday-celebration-dubai-skyline-view.webp",
+      "description": "Make your birthday unforgettable with our comprehensive party planning services, tailored to your theme and preferences.",
+      "shortDescription": "Custom birthday party planning and execution.",
+      "tags": ["Birthday", "Party", "Planning"],
+      "serviceAreas": ["Dubai", "Sharjah", "All UAE"],
+      "features": ["Theme Selection", "Venue Decoration", "Entertainment", "Catering Coordination"],
+      "seoDescription": "Expert birthday party planning in Dubai. Custom themes, decorations, and entertainment for a memorable celebration.",
+      "rating": 4.9,
+      "reviewCount": 450,
+      "bookingOptions": [
+        { "label": "Age Group", "type": "select", "options": ["Kids", "Teens", "Adults"], "required": true },
+        { "label": "Expected Guest Count", "type": "number", "required": true }
+      ]
+    },
+    {
+      "id": "graduation-party-planning",
+      "name": "Graduation Party Planning",
+      "price": 2000,
+      "currency": "AED",
+      "category": "Planning",
+      "image": "https://tsameemevents.com/wp-content/uploads/luxury-outdoor-wedding-reception-sunset-lakeview.webp",
+      "description": "Celebrate your academic achievements with a spectacular graduation party designed to honor your success.",
+      "shortDescription": "Memorable graduation party planning services.",
+      "tags": ["Graduation", "Party", "Planning"],
+      "serviceAreas": ["Dubai", "Abu Dhabi", "All UAE"],
+      "features": ["Custom Decor", "Photo Booths", "DJ & Music", "Catering Setup"],
+      "seoDescription": "Professional graduation party planning in Dubai. Celebrate your success with custom decor and entertainment.",
+      "rating": 4.8,
+      "reviewCount": 320,
+      "bookingOptions": [
+        { "label": "Graduation Level", "type": "select", "options": ["High School", "University", "Postgraduate"], "required": true },
+        { "label": "Event Date", "type": "date", "required": true }
+      ]
+    },
+    {
+      "id": "wedding-tent-rentals",
+      "name": "Wedding Tent Rentals",
+      "price": 2200,
+      "currency": "AED",
+      "category": "Rentals",
+      "image": "https://tsameemevents.com/wp-content/uploads/luxury-arabic-night-event-tent-setup.webp",
+      "description": "High-quality, elegant tents for outdoor weddings and events, providing comfort and style in any weather.",
+      "shortDescription": "Premium tent rentals for outdoor events.",
+      "tags": ["Rentals", "Tents", "Outdoor"],
+      "serviceAreas": ["Dubai", "Sharjah", "Ajman", "All UAE"],
+      "features": ["Various Sizes", "Climate Control Options", "Elegant Draping", "Lighting Setup"],
+      "seoDescription": "Luxury wedding tent rentals in Dubai. Elegant and comfortable tents for outdoor weddings and events.",
+      "rating": 4.9,
+      "reviewCount": 580,
+      "bookingOptions": [
+        { "label": "Tent Size Needed", "type": "select", "options": ["Small (up to 50 guests)", "Medium (50-150 guests)", "Large (150+ guests)"], "required": true },
+        { "label": "Setup Location", "type": "text", "required": true }
+      ]
+    },
+    {
+      "id": "certificates-custom-awards",
+      "name": "Certificates Printing & Custom Awards",
+      "price": 35,
+      "currency": "AED",
+      "category": "Corporate",
+      "image": "https://tsameemevents.com/wp-content/uploads/luxury-islamic-wedding-stationery-allah-calligraphy-gold-cream.webp",
+      "description": "High-quality printing for certificates and beautifully crafted custom awards for corporate events and ceremonies.",
+      "shortDescription": "Premium certificate printing and custom awards.",
+      "tags": ["Printing", "Awards", "Corporate"],
+      "serviceAreas": ["All UAE"],
+      "features": ["Premium Paper", "Custom Engraving", "Foil Stamping", "Elegant Framing"],
+      "seoDescription": "High-quality certificate printing and custom awards in Dubai. Perfect for corporate events and ceremonies.",
+      "rating": 5.0,
+      "reviewCount": 210,
+      "bookingOptions": [
+        { "label": "Item Type", "type": "select", "options": ["Certificates", "Trophies", "Plaques", "Medals"], "required": true },
+        { "label": "Quantity", "type": "number", "required": true }
+      ]
+    },
+    {
+      "id": "engagement-party-decoration",
+      "name": "Engagement Party Decoration",
+      "price": 3500,
+      "currency": "AED",
+      "category": "Decoration",
+      "image": "https://tsameemevents.com/wp-content/uploads/luxurious-gold-and-white-wedding-stage-decoration.webp",
+      "description": "Romantic and elegant decorations tailored specifically for engagement parties to create a magical atmosphere.",
+      "shortDescription": "Elegant engagement party decorations.",
+      "tags": ["Decoration", "Engagement", "Party"],
+      "serviceAreas": ["Dubai", "Sharjah", "All UAE"],
+      "features": ["Floral Archways", "Romantic Lighting", "Custom Signage", "Table Centerpieces"],
+      "seoDescription": "Romantic engagement party decorations in Dubai. Create a magical atmosphere with custom floral and lighting designs.",
+      "rating": 4.9,
+      "reviewCount": 640,
+      "bookingOptions": [
+        { "label": "Theme/Color Palette", "type": "text", "required": true },
+        { "label": "Venue Type", "type": "select", "options": ["Home", "Hotel", "Outdoor", "Restaurant"], "required": true }
+      ]
+    },
+    {
+      "id": "private-dinner-setup",
+      "name": "Private Dinner Event Setup",
+      "price": 2800,
+      "currency": "AED",
+      "category": "Hospitality",
+      "image": "https://tsameemevents.com/wp-content/uploads/luxury-outdoor-wedding-reception-tent-chandeliers.webp",
+      "description": "Intimate and luxurious setup for private dinners, including table styling, ambient lighting, and personalized touches.",
+      "shortDescription": "Luxurious setup for intimate private dinners.",
+      "tags": ["Dinner", "Private Event", "Setup"],
+      "serviceAreas": ["Dubai", "Abu Dhabi", "All UAE"],
+      "features": ["Fine Dining Tableware", "Ambient Lighting", "Floral Centerpieces", "Personalized Menus"],
+      "seoDescription": "Luxurious private dinner event setup in Dubai. Intimate styling, ambient lighting, and fine dining tableware.",
+      "rating": 5.0,
+      "reviewCount": 180,
+      "bookingOptions": [
+        { "label": "Number of Guests", "type": "number", "required": true },
+        { "label": "Occasion", "type": "text", "required": true }
+      ]
+    },
+    {
+      "id": "outdoor-garden-party",
+      "name": "Outdoor Garden Party Setup",
+      "price": 3000,
+      "currency": "AED",
+      "category": "Decoration",
+      "image": "https://tsameemevents.com/wp-content/uploads/luxury-outdoor-wedding-mansion-decor.webp",
+      "description": "Transform any garden space into a stunning event venue with our specialized outdoor party setup services.",
+      "shortDescription": "Stunning outdoor garden party setups.",
+      "tags": ["Outdoor", "Garden", "Party"],
+      "serviceAreas": ["Dubai", "Sharjah", "Ajman", "All UAE"],
+      "features": ["Fairy Lights", "Outdoor Furniture", "Garden Tents", "Pathway Illumination"],
+      "seoDescription": "Beautiful outdoor garden party setup in Dubai. Transform your garden with elegant furniture and fairy lights.",
+      "rating": 4.8,
+      "reviewCount": 390,
+      "bookingOptions": [
+        { "label": "Garden Size (approx sq ft)", "type": "number", "required": true },
+        { "label": "Event Time", "type": "select", "options": ["Daytime", "Evening", "Night"], "required": true }
+      ]
+    },
+    {
+      "id": "ramadan-iftar-setup",
+      "name": "Ramadan Iftar Event Setup",
+      "price": 3500,
+      "currency": "AED",
+      "category": "Corporate",
+      "image": "https://tsameemevents.com/wp-content/uploads/luxury-arabic-night-event-tent-setup.webp",
+      "description": "Traditional and elegant setups for Ramadan Iftar events, perfect for corporate gatherings or large family events.",
+      "shortDescription": "Traditional and elegant Ramadan Iftar setups.",
+      "tags": ["Ramadan", "Iftar", "Corporate", "Traditional"],
+      "serviceAreas": ["Dubai", "Abu Dhabi", "All UAE"],
+      "features": ["Arabic Seating", "Traditional Lanterns", "Buffet Setup", "Themed Decor"],
+      "seoDescription": "Elegant Ramadan Iftar event setup in Dubai. Traditional Arabic seating, lanterns, and themed decor for corporate and family gatherings.",
+      "rating": 4.9,
+      "reviewCount": 250,
+      "bookingOptions": [
+        { "label": "Expected Guest Count", "type": "number", "required": true },
+        { "label": "Venue Type", "type": "select", "options": ["Corporate Office", "Hotel", "Private Tent", "Outdoor"], "required": true }
+      ]
+    },
+    {
+      "id": "event-furniture-rental",
+      "name": "Event Furniture Rental (Sofas, Tables, VIP Chairs)",
+      "price": 80,
+      "currency": "AED",
+      "category": "Rentals",
+      "image": "https://tsameemevents.com/wp-content/uploads/luxury-event-hospitality-team-dubai-burj-al-arab.webp",
+      "description": "A wide selection of premium event furniture including luxurious sofas, elegant tables, and comfortable VIP chairs.",
+      "shortDescription": "Premium furniture rentals for all events.",
+      "tags": ["Rentals", "Furniture", "VIP"],
+      "serviceAreas": ["Dubai", "Sharjah", "All UAE"],
+      "features": ["VIP Chairs (from 80 AED)", "Luxury Sofas (from 300 AED)", "Banquet Tables", "Lounge Seating"],
+      "seoDescription": "Premium event furniture rental in Dubai. Wide selection of VIP chairs, luxury sofas, and elegant tables.",
+      "rating": 4.8,
+      "reviewCount": 890,
+      "bookingOptions": [
+        { "label": "Furniture Type Needed", "type": "text", "required": true },
+        { "label": "Delivery Date", "type": "date", "required": true }
+      ]
+    }
+  ]
+}

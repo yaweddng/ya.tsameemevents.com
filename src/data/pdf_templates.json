@@ -1,0 +1,57 @@
+{
+  "templates": [
+    {
+      "id": "default-pdf",
+      "name": "Standard Proposal",
+      "slug": "standard-proposal",
+      "pageBgColor": "#FFFFFF",
+      "header": {
+        "bgColor": "#141414",
+        "textColor": "#F27D26",
+        "websiteName": { "part1": "YA", "part2": "WEDDING", "color": "#F27D26" },
+        "contactInfo": {
+          "whatsapp": "+971 50 558 8842",
+          "email": "info@ya.com",
+          "website": "www.ya.com",
+          "color": "#F27D26"
+        },
+        "centerIcon": { "text": "YA", "bgColor": "#F27D26", "textColor": "#141414" },
+        "rightInfo": {
+          "location": "Dubai, UAE",
+          "call": "+971 50 558 8842",
+          "date": "2026-03-08",
+          "color": "#F27D26"
+        },
+        "customTitle": { "text1": "EVENT", "text2": "PROPOSAL", "color": "#F27D26" }
+      },
+      "footer": {
+        "bgColor": "#F5F5F5",
+        "textColor": "#8E9299",
+        "centerText": { "text": "Thank you for choosing YA Wedding", "color": "#8E9299" },
+        "leftInfo": {
+          "logoText": "YA WEDDING DUBAI",
+          "website": "www.ya.com",
+          "phone": "+971 50 558 8842",
+          "color": "#8E9299"
+        },
+        "centerIcon": { "text": "YA", "bgColor": "#141414", "textColor": "#F27D26" },
+        "rightInfo": {
+          "showSubmissionId": true,
+          "showSubmissionDate": true,
+          "showPageCount": true,
+          "color": "#8E9299"
+        },
+        "copyright": { "text": "© 2026 YA Wedding. All rights reserved.", "color": "#8E9299" }
+      },
+      "body": {
+        "textColor": "#141414",
+        "content": "standard-proposal-content"
+      },
+      "watermark": {
+        "text": "CONFIDENTIAL",
+        "color": "#8E9299",
+        "opacity": 0.1
+      }
+    }
+  ]
+}

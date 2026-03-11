@@ -1,0 +1,49 @@
+{
+  "templates": [
+    {
+      "id": "default-email",
+      "name": "Default Notification",
+      "slug": "default-email",
+      "header": {
+        "bgColor": "#141414",
+        "textColor": "#F27D26",
+        "centerIcon": { "text": "YA", "bgColor": "#F27D26", "textColor": "#141414", "show": true },
+        "contactInfo": {
+          "whatsapp": "+971 50 558 8842",
+          "email": "info@ya.com",
+          "website": "www.ya.com",
+          "show": true,
+          "color": "#F27D26"
+        }
+      },
+      "body": {
+        "bgColor": "#FFFFFF",
+        "textColor": "#141414",
+        "title": { "part1": "New", "part2": "Notification", "color": "#141414" },
+        "subheading": { "text": "You have received a new update from our platform.", "color": "#8E9299" },
+        "content": "default-content",
+        "overlayIcon": { "icon": "Mail", "opacity": 0.05, "color": "#141414", "show": true }
+      },
+      "cta": {
+        "buttons": [
+          { "text": "View Dashboard", "url": "/admin", "show": true, "bgColor": "#F27D26", "textColor": "#141414" }
+        ]
+      },
+      "footer": {
+        "bgColor": "#F5F5F5",
+        "textColor": "#8E9299",
+        "links": [
+          { "label": "Facebook", "url": "#", "show": true, "color": "#F27D26" },
+          { "label": "Instagram", "url": "#", "show": true, "color": "#F27D26" },
+          { "label": "WhatsApp", "url": "#", "show": true, "color": "#F27D26" }
+        ],
+        "platformName": { "text": "YA Wedding", "color": "#F27D26" },
+        "shortDescription": { "text": "Luxury Event Planning & Design", "color": "#8E9299" },
+        "copyright": { "text": "© 2026 Your Agency. All rights reserved.", "color": "#8E9299" }
+      },
+      "advanced": {
+        "responsive": true
+      }
+    }
+  ]
+}

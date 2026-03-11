@@ -1,0 +1,52 @@
+{
+  "ratings": [
+    {
+      "id": "r1",
+      "name": "Sarah Ahmed",
+      "location": "Dubai, UAE",
+      "slug": "sarah-ahmed-wedding",
+      "profileImage": "https://picsum.photos/seed/sarah/100/100",
+      "showProfileImage": true,
+      "stars": 5,
+      "content": "Tsameem Events made our wedding day absolutely magical. From the initial planning to the final execution, every detail was handled with such elegance and professionalism. Highly recommended for anyone looking for a luxury wedding in Dubai!",
+      "services": ["Wedding Planning", "Floral Design", "Catering"],
+      "budgetRange": "AED 150,000+",
+      "isVerified": true,
+      "badge": "Elite",
+      "status": "approved",
+      "createdAt": "2024-01-15T10:00:00Z"
+    },
+    {
+      "id": "r2",
+      "name": "Michael Chen",
+      "location": "Abu Dhabi, UAE",
+      "slug": "michael-chen-corporate",
+      "profileImage": "https://picsum.photos/seed/michael/100/100",
+      "showProfileImage": true,
+      "stars": 5,
+      "content": "We used Tsameem for our annual corporate gala and they exceeded all expectations. The lighting and decor were world-class. A truly premium experience from start to finish.",
+      "services": ["Corporate Events", "Lighting & Sound"],
+      "budgetRange": "AED 80,000 - 120,000",
+      "isVerified": true,
+      "badge": "Premium",
+      "status": "approved",
+      "createdAt": "2024-02-01T14:30:00Z"
+    },
+    {
+      "id": "r3",
+      "name": "Fatima Al Mansouri",
+      "location": "Sharjah, UAE",
+      "slug": "fatima-henna-night",
+      "profileImage": "https://picsum.photos/seed/fatima/100/100",
+      "showProfileImage": true,
+      "stars": 4,
+      "content": "Beautiful traditional setup for my henna night. The attention to detail in the Emarati decor was stunning. Thank you for making it so special!",
+      "services": ["Traditional Decor", "Henna Night Planning"],
+      "budgetRange": "AED 40,000 - 60,000",
+      "isVerified": true,
+      "badge": "Traditional",
+      "status": "approved",
+      "createdAt": "2024-02-10T09:15:00Z"
+    }
+  ]
+}

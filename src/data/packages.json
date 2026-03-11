@@ -1,0 +1,169 @@
+{
+  "packages": [
+    {
+      "id": "wedding",
+      "title": "Wedding Packages",
+      "description": "Complete luxury wedding planning and execution.",
+      "features": ["Stage & Decor", "Wedding Cards", "Guests", "Lighting & Sound", "Premium Catering", "Photography & Video"],
+      "tiers": {
+        "traditional": { "price": 45000, "name": "Traditional", "guests": 100, "includes": [true, true, true, true, false, false] },
+        "premium": { "price": 85000, "name": "Premium", "guests": 250, "includes": [true, true, true, true, true, false] },
+        "luxury": { "price": 150000, "name": "Luxury", "guests": 500, "includes": [true, true, true, true, true, true] }
+      }
+    },
+    {
+      "id": "corporate",
+      "title": "Corporate Event",
+      "description": "Professional corporate event management.",
+      "features": ["Venue Setup", "Invitation Cards", "Guests", "Catering", "Registration Desk", "Entertainment"],
+      "tiers": {
+        "traditional": { "price": 12000, "name": "Standard", "guests": 50, "includes": [true, true, true, false, false, false] },
+        "premium": { "price": 25000, "name": "Executive", "guests": 150, "includes": [true, true, true, true, false, false] },
+        "luxury": { "price": 50000, "name": "VIP", "guests": 300, "includes": [true, true, true, true, true, true] }
+      }
+    },
+    {
+      "id": "private",
+      "title": "Private Event",
+      "description": "Intimate gatherings and private celebrations.",
+      "features": ["Decor", "Invitation Cards", "Guests", "Music", "Catering", "Host"],
+      "tiers": {
+        "traditional": { "price": 8000, "name": "Basic", "guests": 20, "includes": [true, true, true, false, false, false] },
+        "premium": { "price": 15000, "name": "Classic", "guests": 50, "includes": [true, true, true, true, false, false] },
+        "luxury": { "price": 30000, "name": "Exclusive", "guests": 100, "includes": [true, true, true, true, true, true] }
+      }
+    },
+    {
+      "id": "iftar",
+      "title": "Iftar Party",
+      "description": "Ramadan Iftar event setup and catering.",
+      "features": ["Tent Setup", "Invitation Cards", "Guests", "Buffet Catering", "Waitstaff", "Prayer Area"],
+      "tiers": {
+        "traditional": { "price": 5000, "name": "Standard", "guests": 50, "includes": [true, true, true, true, false, false] },
+        "premium": { "price": 12000, "name": "Premium", "guests": 100, "includes": [true, true, true, true, true, false] },
+        "luxury": { "price": 25000, "name": "Royal", "guests": 250, "includes": [true, true, true, true, true, true] }
+      }
+    },
+    {
+      "id": "graduation",
+      "title": "Graduation",
+      "description": "Celebrate your academic achievements.",
+      "features": ["Stage & Backdrop", "Invitation Cards", "Guests", "Photo Booth", "Catering", "Custom Awards"],
+      "tiers": {
+        "traditional": { "price": 5000, "name": "Basic", "guests": 50, "includes": [true, true, true, false, false, false] },
+        "premium": { "price": 12000, "name": "Classic", "guests": 100, "includes": [true, true, true, true, false, false] },
+        "luxury": { "price": 25000, "name": "Grand", "guests": 200, "includes": [true, true, true, true, true, true] }
+      }
+    },
+    {
+      "id": "emarati_wedding",
+      "title": "Emarati Wedding",
+      "description": "Traditional Emarati wedding celebrations.",
+      "features": ["Majlis Setup", "Premium Wedding Cards", "Guests", "Local Cuisine", "Luxury Tents", "VIP Service"],
+      "tiers": {
+        "traditional": { "price": 40000, "name": "Authentic", "guests": 200, "includes": [true, true, true, false, false, false] },
+        "premium": { "price": 90000, "name": "Premium", "guests": 500, "includes": [true, true, true, true, true, false] },
+        "luxury": { "price": 180000, "name": "Royal", "guests": 1000, "includes": [true, true, true, true, true, true] }
+      }
+    },
+    {
+      "id": "indian_wedding",
+      "title": "Indian Wedding",
+      "description": "Vibrant and colorful Indian wedding events.",
+      "features": ["Mandap Decor", "Wedding Cards", "Guests", "Catering (Veg/Non-Veg)", "Mehendi Setup", "Baraat Coordination"],
+      "tiers": {
+        "traditional": { "price": 35000, "name": "Classic", "guests": 200, "includes": [true, true, true, false, false, false] },
+        "premium": { "price": 75000, "name": "Premium", "guests": 400, "includes": [true, true, true, true, false, false] },
+        "luxury": { "price": 140000, "name": "Maharaja", "guests": 800, "includes": [true, true, true, true, true, true] }
+      }
+    },
+    {
+      "id": "western_wedding",
+      "title": "Western Wedding",
+      "description": "Elegant Western-style wedding ceremonies.",
+      "features": ["Floral Arch", "Wedding Cards", "Guests", "Plated Dinner", "Dance Floor", "Cocktail Reception"],
+      "tiers": {
+        "traditional": { "price": 30000, "name": "Classic", "guests": 100, "includes": [true, true, true, false, false, false] },
+        "premium": { "price": 60000, "name": "Elegant", "guests": 200, "includes": [true, true, true, true, false, false] },
+        "luxury": { "price": 110000, "name": "Luxury", "guests": 400, "includes": [true, true, true, true, true, true] }
+      }
+    },
+    {
+      "id": "government",
+      "title": "Government Event",
+      "description": "Official government and protocol events.",
+      "features": ["Protocol Seating", "Official Invitations", "Guests", "VIP Catering", "Branding", "Media Wall"],
+      "tiers": {
+        "traditional": { "price": 25000, "name": "Standard", "guests": 100, "includes": [true, true, true, false, false, false] },
+        "premium": { "price": 55000, "name": "Executive", "guests": 300, "includes": [true, true, true, true, true, false] },
+        "luxury": { "price": 100000, "name": "Protocol", "guests": 600, "includes": [true, true, true, true, true, true] }
+      }
+    },
+    {
+      "id": "reunion",
+      "title": "Reunion",
+      "description": "Memorable family or alumni reunions.",
+      "features": ["Venue Booking", "Invitation Cards", "Guests", "Photo/Video", "Themed Decor", "Activities"],
+      "tiers": {
+        "traditional": { "price": 6000, "name": "Basic", "guests": 40, "includes": [true, true, true, false, false, false] },
+        "premium": { "price": 12000, "name": "Classic", "guests": 80, "includes": [true, true, true, true, false, false] },
+        "luxury": { "price": 25000, "name": "Grand", "guests": 150, "includes": [true, true, true, true, true, true] }
+      }
+    },
+    {
+      "id": "year_end",
+      "title": "Year End Party",
+      "description": "Celebrate the year's success with your team.",
+      "features": ["Party Venue", "Invitation Cards", "Guests", "Open Buffet", "Photo Booth", "Themed Decor"],
+      "tiers": {
+        "traditional": { "price": 10000, "name": "Standard", "guests": 50, "includes": [true, true, true, false, false, false] },
+        "premium": { "price": 22000, "name": "Premium", "guests": 150, "includes": [true, true, true, true, true, false] },
+        "luxury": { "price": 45000, "name": "Gala", "guests": 300, "includes": [true, true, true, true, true, true] }
+      }
+    },
+    {
+      "id": "event_management",
+      "title": "Event Management",
+      "description": "Comprehensive management for any custom event.",
+      "features": ["Planning & Ops", "Digital Invitations", "Guests", "Marketing", "Registration", "Post-event Report"],
+      "tiers": {
+        "traditional": { "price": 10000, "name": "Basic", "guests": 100, "includes": [true, true, true, false, false, false] },
+        "premium": { "price": 25000, "name": "Comprehensive", "guests": 300, "includes": [true, true, true, true, false, false] },
+        "luxury": { "price": 45000, "name": "Full-Service", "guests": 500, "includes": [true, true, true, true, true, true] }
+      }
+    },
+    {
+      "id": "engagement",
+      "title": "Engagement",
+      "description": "Beautiful setups for your special proposal or engagement.",
+      "features": ["Romantic Decor", "Engagement Cards", "Guests", "Private Dining", "Live Music", "Custom Cake"],
+      "tiers": {
+        "traditional": { "price": 6000, "name": "Intimate", "guests": 30, "includes": [true, true, true, false, false, false] },
+        "premium": { "price": 12000, "name": "Classic", "guests": 60, "includes": [true, true, true, true, false, false] },
+        "luxury": { "price": 25000, "name": "Extravagant", "guests": 120, "includes": [true, true, true, true, true, true] }
+      }
+    },
+    {
+      "id": "grand_opening",
+      "title": "Grand Opening",
+      "description": "Make a statement with your business launch.",
+      "features": ["Ribbon Cutting", "Invitation Cards", "Guests", "Promotional Staff", "Catering", "Media Coverage"],
+      "tiers": {
+        "traditional": { "price": 8000, "name": "Standard", "guests": 50, "includes": [true, true, true, false, false, false] },
+        "premium": { "price": 18000, "name": "Premium", "guests": 150, "includes": [true, true, true, true, true, false] },
+        "luxury": { "price": 35000, "name": "Spectacular", "guests": 300, "includes": [true, true, true, true, true, true] }
+      }
+    },
+    {
+      "id": "festivals",
+      "title": "Festivals",
+      "description": "Large scale festival planning and execution.",
+      "features": ["Stage & Rigging", "VIP Passes", "Guests", "Artist Management", "Ticketing", "Sponsor Areas"],
+      "tiers": {
+        "traditional": { "price": 40000, "name": "Local", "guests": 500, "includes": [true, true, true, false, false, false] },
+        "premium": { "price": 100000, "name": "Regional", "guests": 2000, "includes": [true, true, true, true, true, false] },
+        "luxury": { "price": 250000, "name": "International", "guests": 5000, "includes": [true, true, true, true, true, true] }
+      }
+    }
+  ]
+}

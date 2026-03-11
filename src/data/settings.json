@@ -1,0 +1,310 @@
+{
+  "siteName": "YA Wedding",
+  "siteTitle": "Luxury Wedding Planner Dubai",
+  "logoType": "image",
+  "siteLogo": "/favicon.svg",
+  "siteLogoText": "YA",
+  "siteFavicon": "/favicon.svg",
+  "siteDescription": "Premium wedding planning and event management services in Dubai. Specializing in luxury weddings, themed decorations, and corporate events.",
+  "seoSchema": "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"Organization\",\n  \"name\": \"YA Wedding\",\n  \"url\": \"https://ya.tssmeemevents.com\",\n  \"logo\": \"/favicon.svg\"\n}",
+  "googleTagManagerId": "GTM-XXXXXXX",
+  "googleAnalyticsId": "G-XXXXXXXXXX",
+  "googleSearchConsoleKey": "2dQ4j2m-w2kB1OmX75fwe8F6Re32kWK2pqxL3slhbVw",
+  "googleAdsenseKey": "",
+  "header": {
+    "menu": [
+      {
+        "id": "1",
+        "label": "Home",
+        "url": "/",
+        "icon": "Home"
+      },
+      {
+        "id": "2",
+        "label": "Services",
+        "url": "/services",
+        "icon": "Sparkles",
+        "subItems": [
+          {
+            "label": "Packages",
+            "url": "/packages",
+            "icon": "Package"
+          },
+          {
+            "label": "Planners",
+            "url": "/package-builder",
+            "icon": "Calendar"
+          },
+          {
+            "label": "Offers",
+            "url": "/discounts",
+            "icon": "Tag"
+          }
+        ]
+      },
+      {
+        "id": "3",
+        "label": "About",
+        "url": "/about",
+        "icon": "Info",
+        "subItems": [
+          {
+            "label": "FAQ",
+            "url": "/faq",
+            "icon": "HelpCircle"
+          }
+        ]
+      },
+      {
+        "id": "4",
+        "label": "Contact",
+        "url": "/contact",
+        "icon": "Phone"
+      },
+      {
+        "id": "5",
+        "label": "Blog",
+        "url": "/blog",
+        "icon": "BookOpen",
+        "subItems": [
+          {
+            "label": "Gallery",
+            "url": "/gallery",
+            "icon": "ImageIcon"
+          }
+        ]
+      }
+    ],
+    "ctas": [
+      {
+        "label": "Book Now",
+        "url": "/contact",
+        "variant": "primary"
+      }
+    ],
+    "mobileMenu": {
+      "ctaIcon": "Phone",
+      "items": []
+    }
+  },
+  "footer": {
+    "logo": "/favicon.svg",
+    "title": "YA Wedding",
+    "description": "Luxury Wedding Planner Dubai. Creating unforgettable moments with elegance and precision.",
+    "socialLinks": [
+      {
+        "platform": "Instagram",
+        "url": "https://instagram.com/ya_wedding",
+        "icon": "Instagram"
+      },
+      {
+        "platform": "Facebook",
+        "url": "https://facebook.com/yaweddingdubai",
+        "icon": "Facebook"
+      }
+    ],
+    "navigation": [
+      {
+        "title": "Services",
+        "items": [
+          {
+            "label": "Full Wedding Planning",
+            "url": "/services/full-wedding-planning"
+          },
+          {
+            "label": "Stage Decoration",
+            "url": "/services/wedding-stage-decor"
+          },
+          {
+            "label": "Photography",
+            "url": "/services/photography-videography"
+          },
+          {
+            "label": "Corporate Events",
+            "url": "/services/corporate-events"
+          }
+        ]
+      },
+      {
+        "title": "Company",
+        "items": [
+          {
+            "label": "About Us",
+            "url": "/about"
+          },
+          {
+            "label": "Packages",
+            "url": "/packages"
+          },
+          {
+            "label": "Package Builder",
+            "url": "/package-builder"
+          },
+          {
+            "label": "Discounts & Promos",
+            "url": "/discounts"
+          },
+          {
+            "label": "FAQ",
+            "url": "/faq"
+          },
+          {
+            "label": "Gallery",
+            "url": "/gallery"
+          },
+          {
+            "label": "Blog",
+            "url": "/blog"
+          },
+          {
+            "label": "Partnerships",
+            "url": "/partnerships"
+          }
+        ]
+      },
+      {
+        "title": "Support",
+        "items": [
+          {
+            "label": "Help Center",
+            "url": "/help-center"
+          },
+          {
+            "label": "Trust & Safety",
+            "url": "/trust-safety"
+          },
+          {
+            "label": "Terms of Service",
+            "url": "/terms-of-service"
+          },
+          {
+            "label": "Privacy Policy",
+            "url": "/privacy-policy"
+          },
+          {
+            "label": "Return and Refund",
+            "url": "/return-refund"
+          }
+        ]
+      }
+    ],
+    "contactInfo": {
+      "title": "Contact Us",
+      "items": [
+        {
+          "icon": "Mail",
+          "value": "ya@tsameemevents.com",
+          "label": "Email"
+        },
+        {
+          "icon": "Phone",
+          "value": "+971 50 558 8842",
+          "label": "Phone"
+        },
+        {
+          "icon": "MapPin",
+          "value": "Abu Hail Center, 2nd Floor - Hor Al Anz - Deira Dubai - UAE",
+          "label": "Address"
+        }
+      ]
+    },
+    "moreInfo": {
+      "title": "More info",
+      "items": [
+        {
+          "icon": "Clock",
+          "value": "07:00 AM - 11:30 PM",
+          "label": "Sat - Fri"
+        }
+      ]
+    },
+    "seoTags": [
+      "Wedding Planner Dubai",
+      "Luxury Events",
+      "Dubai Weddings"
+    ],
+    "copyrightText": "© 2024 YA Wedding. All rights reserved. A TsameemEvents Sub Branch.",
+    "ctas": [
+      {
+        "label": "Contact Us",
+        "url": "/contact",
+        "show": true
+      }
+    ],
+    "showSEOTags": true,
+    "showCTA": true,
+    "showHours": true,
+    "showContact": true
+  },
+  "floatingItems": {
+    "helpTabs": {
+      "show": true,
+      "viewType": "button",
+      "items": [
+        {
+          "label": "Help",
+          "icon": "HelpCircle",
+          "url": "/help",
+          "position": "right"
+        }
+      ]
+    },
+    "actionButtons": {
+      "show": true,
+      "position": "right",
+      "items": [
+        {
+          "icon": "Phone",
+          "url": "tel:+971505588842",
+          "label": "Call",
+          "show": true
+        },
+        {
+          "icon": "MessageSquare",
+          "url": "https://wa.me/971505588842",
+          "label": "WhatsApp",
+          "show": true
+        }
+      ]
+    }
+  },
+  "googleMapsApiKey": "",
+  "heroBackgroundImage": "https://tsameemevents.com/wp-content/uploads/luxury-outdoor-wedding-reception-sunset-lakeview.webp",
+  "heroHeightDesktop": "50vh",
+  "heroHeightTablet": "60vh",
+  "heroHeightMobile": "75vh",
+  "helpTabName": "Help",
+  "helpTabSize": "small",
+  "aboutImage": "https://tsameemevents.com/wp-content/uploads/working-on-wedding-stage-deocration-in-a-wedding-arch-in-dubai.webp",
+  "aboutStats": [
+    {
+      "label": "Years Experience",
+      "value": "10+"
+    },
+    {
+      "label": "Weddings Planned",
+      "value": "500+"
+    },
+    {
+      "label": "Team Members",
+      "value": "20+"
+    },
+    {
+      "label": "Happy Clients",
+      "value": "100%"
+    }
+  ],
+  "logoSettings": {
+    "header": {
+      "desktop": {
+        "part1": "YA",
+        "part2": "Wedding"
+      },
+      "mobile": "YA"
+    },
+    "footer": {
+      "part1": "YA",
+      "part2": "Wedding"
+    }
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "widgets": [
+    {
+      "id": "widget-1",
+      "type": "contact-form",
+      "title": "Get in Touch",
+      "config": {
+        "email": "partner@demo.com"
+      }
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "smtpHost": "smtp.hostinger.com",
+  "smtpPort": "465",
+  "smtpUser": "info@tsameemevents.com",
+  "smtpPass": "Yahia.122016@",
+  "adminEmail": "Web-Admin@tsameemevents.com",
+  "fromEmail": "info@tsameemevents.com"
+}

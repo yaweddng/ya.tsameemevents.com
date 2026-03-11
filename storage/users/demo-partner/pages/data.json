@@ -1,0 +1,27 @@
+{
+  "pages": [
+    {
+      "id": "page-1",
+      "title": "Home",
+      "slug": "home",
+      "published": true,
+      "content": "Welcome to Elite Weddings Dubai. We create unforgettable moments.",
+      "sections": [
+        {
+          "id": "hero",
+          "type": "hero",
+          "title": "Luxury Weddings in Dubai",
+          "subtitle": "Bespoke planning for your special day",
+          "backgroundImage": "https://tsameemevents.com/wp-content/uploads/luxury-outdoor-wedding-reception-sunset-lakeview.webp"
+        }
+      ]
+    },
+    {
+      "id": "page-2",
+      "title": "About Us",
+      "slug": "about",
+      "published": true,
+      "content": "We are a team of passionate wedding planners with over 10 years of experience in Dubai."
+    }
+  ]
+}

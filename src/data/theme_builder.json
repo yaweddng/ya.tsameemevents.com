@@ -1,0 +1,91 @@
+{
+  "templates": [
+    {
+      "id": "global-header",
+      "type": "header",
+      "name": "Global Header",
+      "config": {
+        "layout": "standard",
+        "sticky": true,
+        "transparent": false,
+        "logo": {
+          "type": "text",
+          "text": "YA Wedding"
+        },
+        "menu": "main-menu"
+      },
+      "conditions": [
+        "entire-site"
+      ],
+      "status": "Active"
+    },
+    {
+      "id": "global-footer",
+      "type": "footer",
+      "name": "Global Footer",
+      "config": {
+        "layout": "standard",
+        "columns": 4,
+        "copyright": "© 2026 YA Wedding Dubai"
+      },
+      "conditions": [
+        "entire-site"
+      ],
+      "status": "Active"
+    },
+    {
+      "id": "global-styles",
+      "type": "styles",
+      "name": "Global Styles",
+      "config": {
+        "colors": {
+          "primary": "#00C896",
+          "secondary": "#0B0F14",
+          "accent": "#F27D26",
+          "background": "#0B0F14",
+          "text": "#FFFFFF"
+        },
+        "typography": {
+          "headings": "Inter",
+          "body": "Inter",
+          "script": "Germania One"
+        },
+        "buttons": {
+          "radius": "12px",
+          "padding": "12px 24px"
+        }
+      },
+      "status": "Active"
+    },
+    {
+      "id": "search-results",
+      "type": "search",
+      "name": "Search Results Template",
+      "config": {
+        "layout": "grid",
+        "columns": 3,
+        "showSidebar": true,
+        "title": "Search results for: {search_term}"
+      },
+      "conditions": [
+        "search-results"
+      ],
+      "status": "Active"
+    },
+    {
+      "id": "404-page",
+      "type": "404",
+      "name": "404 Error Page",
+      "config": {
+        "title": "Page Not Found",
+        "message": "The page you are looking for might have been removed or is temporarily unavailable.",
+        "buttonText": "Back to Home",
+        "buttonUrl": "/"
+      },
+      "conditions": [
+        "404-page"
+      ],
+      "status": "Active"
+    }
+  ]
+}

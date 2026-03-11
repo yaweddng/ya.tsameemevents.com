@@ -1,0 +1,7 @@
+{
+  "name": "YA Wedding - Luxury Wedding Planner Dubai",
+  "description": "Premium wedding planning and event management services in Dubai. Specializing in luxury weddings, themed decorations, and corporate events.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}

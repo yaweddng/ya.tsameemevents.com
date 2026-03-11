@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Offline - YA Wedding</title>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0a0a0a;
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            text-align: center;
+        }
+        h1 {
+            color: #00C896;
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+        p {
+            color: #a3a3a3;
+            max-w-md;
+        }
+        .btn {
+            margin-top: 2rem;
+            background-color: #00C896;
+            color: #0a0a0a;
+            padding: 0.75rem 2rem;
+            border-radius: 9999px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>You are offline</h1>
+    <p>It seems you've lost your internet connection. Please check your network and try again.</p>
+    <a href="/" class="btn" onclick="window.location.reload(); return false;">Try Again</a>
+</body>
+</html>

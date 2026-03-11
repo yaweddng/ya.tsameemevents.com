@@ -1,0 +1,14 @@
+{
+  "posts": [
+    {
+      "id": "post-1",
+      "title": "Top 5 Wedding Venues in Dubai",
+      "slug": "top-5-venues",
+      "excerpt": "Discover the most stunning locations for your dream wedding in Dubai.",
+      "content": "Full article content about venues...",
+      "image": "https://tsameemevents.com/wp-content/uploads/luxury-outdoor-wedding-reception-sunset-lakeview.webp",
+      "date": "2024-03-01",
+      "category": "Planning"
+    }
+  ]
+}

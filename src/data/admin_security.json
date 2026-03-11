@@ -1,0 +1,13 @@
+{
+  "slug": "/admin-portal-access",
+  "securityQuestions": [
+    { "q": "Who is Owner", "a": "Jakariya" },
+    { "q": "Who is Developer", "a": "Jaek" },
+    { "q": "What is Security Code", "a": "82725" }
+  ],
+  "allowedGeos": ["Sylhet, Bangladesh", "Dubai, UAE", "Dhaka, Bangladesh", "London, UK", "California, USA", "New York, USA", "Manual Entry", "Europe", "United Kingdom", "Germany", "United States", "UAE", "Bangladesh"],
+  "adminCredentials": {
+    "username": "admin@ya.com",
+    "password": "ya-admin-2024"
+  }
+}

@@ -1,0 +1,72 @@
+[
+  {
+    "id": "step-1",
+    "title": "Basic Info",
+    "description": "Guest Count, Date, package type, Nationality",
+    "type": "custom",
+    "required": true
+  },
+  {
+    "id": "step-2",
+    "title": "Budget & Category",
+    "description": "Select your budget range and service category",
+    "type": "custom",
+    "required": true
+  },
+  {
+    "id": "step-3",
+    "title": "Select Services",
+    "description": "Choose services related to your previous selection",
+    "type": "services",
+    "required": true
+  },
+  {
+    "id": "step-4",
+    "title": "Add-ons",
+    "description": "Suggested additional services",
+    "type": "services",
+    "required": false
+  },
+  {
+    "id": "step-5",
+    "title": "Environment",
+    "description": "Select your event location and environment",
+    "type": "custom",
+    "required": true
+  },
+  {
+    "id": "step-6",
+    "title": "Hospitality",
+    "description": "Guest hospitality and catering packages",
+    "type": "custom",
+    "required": false
+  },
+  {
+    "id": "step-7",
+    "title": "Entertainment",
+    "description": "DJ, Dance stage, Media, Sound system",
+    "type": "custom",
+    "required": false
+  },
+  {
+    "id": "step-8",
+    "title": "Theme & Cost",
+    "description": "Select theme and review approximate cost",
+    "type": "custom",
+    "required": true
+  },
+  {
+    "id": "step-9",
+    "title": "Lead Collection",
+    "description": "Book your free consultation",
+    "type": "lead",
+    "required": true
+  },
+  {
+    "id": "step-10",
+    "title": "Finalize",
+    "description": "Download your proposal and finalize on WhatsApp",
+    "type": "custom",
+    "required": true
+  }
+]

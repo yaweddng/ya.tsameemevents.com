@@ -1,0 +1,95 @@
+{
+  "name": "YA Wedding - Luxury Wedding Planner Dubai",
+  "short_name": "YA Wedding",
+  "id": "/",
+  "description": "Premium wedding planning and event management services in Dubai. Specializing in luxury weddings, themed decorations, and corporate events.",
+  "start_url": "/",
+  "display": "standalone",
+  "display_override": ["window-controls-overlay", "minimal-ui"],
+  "background_color": "#0B0F14",
+  "theme_color": "#00C896",
+  "orientation": "portrait",
+  "launch_handler": {
+    "client_mode": ["navigate-existing", "auto"]
+  },
+  "protocol_handlers": [
+    {
+      "protocol": "web+ya-wedding",
+      "url": "/?type=%s"
+    }
+  ],
+  "file_handlers": [
+    {
+      "action": "/open-file",
+      "accept": {
+        "text/plain": [".txt"],
+        "application/pdf": [".pdf"]
+      }
+    }
+  ],
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "widgets": [
+    {
+      "name": "Upcoming Event",
+      "description": "View your next scheduled wedding consultation",
+      "tag": "upcoming-event",
+      "ms_ac_template": "widget-template.json",
+      "icons": [{ "src": "/favicon.svg", "sizes": "192x192" }]
+    }
+  ],
+  "categories": ["lifestyle", "business"],
+  "shortcuts": [
+    {
+      "name": "Book a Consultation",
+      "short_name": "Book",
+      "description": "Schedule a meeting with our wedding planners",
+      "url": "/contact",
+      "icons": [{ "src": "/favicon.svg", "sizes": "192x192" }]
+    },
+    {
+      "name": "View Gallery",
+      "short_name": "Gallery",
+      "description": "Browse our luxury wedding portfolio",
+      "url": "/gallery",
+      "icons": [{ "src": "/favicon.svg", "sizes": "192x192" }]
+    }
+  ],
+  "share_target": {
+    "action": "/share-target",
+    "method": "GET",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url"
+    }
+  },
+  "screenshots": [
+    {
+      "src": "https://picsum.photos/seed/wedding1/1280/720",
+      "sizes": "1280x720",
+      "type": "image/jpeg",
+      "form_factor": "wide",
+      "label": "Luxury Wedding Planning"
+    },
+    {
+      "src": "https://picsum.photos/seed/wedding2/720/1280",
+      "sizes": "720x1280",
+      "type": "image/jpeg",
+      "form_factor": "narrow",
+      "label": "Mobile Experience"
+    },
+    {
+      "src": "https://picsum.photos/seed/wedding3/1280/720",
+      "sizes": "1280x720",
+      "type": "image/jpeg",
+      "label": "Desktop Dashboard"
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "users": [
+    {
+      "id": "demo-partner",
+      "email": "partner@demo.com",
+      "password": "demo-password-2024",
+      "name": "Demo Partner",
+      "username": "demopartner",
+      "role": "partner",
+      "subscriptionStatus": "active",
+      "createdAt": "2024-03-08T12:00:00Z"
+    }
+  ]
+}

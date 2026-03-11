@@ -1,0 +1,59 @@
+{
+  "promos": [
+    {
+      "id": "early-bird",
+      "title": "15% Off Early Bird Booking",
+      "description": "Book your wedding or major event at least 6 months in advance and receive a 15% discount on our planning and coordination fees.",
+      "icon": "Tag",
+      "terms": [
+        "Applicable to planning fees only",
+        "Minimum booking value applies",
+        "Cannot be combined with other percentage discounts"
+      ],
+      "badge": "Most Popular",
+      "link": "/contact",
+      "fullDetails": "This offer is designed for couples who plan ahead. By booking our services at least 6 months prior to your event date, you secure our top-tier planning team at a 15% discounted rate.\n\nCancellation & Refunds:\n- Cancellations made within 14 days of booking are eligible for a full refund of the deposit.\n- Cancellations made after 14 days but before 90 days of the event will incur a 25% cancellation fee.\n- No refunds are provided for cancellations within 90 days of the event.\n\nAgreements:\n- The discount applies strictly to the 'planning and coordination' portion of the invoice.\n- Third-party vendor costs (catering, venue, etc.) are not subject to this discount."
+    },
+    {
+      "id": "free-invitations",
+      "title": "Free Luxury Invitation Cards",
+      "description": "Get complimentary premium digital and physical invitation cards when you book any of our Full Wedding Planning packages.",
+      "icon": "Gift",
+      "terms": [
+        "Up to 200 physical cards included",
+        "Includes custom digital design",
+        "Valid for Full Wedding Planning packages only"
+      ],
+      "badge": "Limited Time",
+      "link": "/contact",
+      "fullDetails": "Elevate your guests' first impression with our bespoke luxury invitation cards, completely free when you opt for our Full Wedding Planning package.\n\nCancellation & Refunds:\n- If the wedding planning package is cancelled, the cost of any printed invitations will be deducted from the refundable amount.\n- Digital designs remain the property of YA Wedding until the final package payment is made.\n\nAgreements:\n- Includes up to 3 design revisions.\n- Additional physical cards beyond the 200 limit will be charged at standard rates.\n- Shipping costs for physical cards outside the UAE are not included."
+    },
+    {
+      "id": "cashback-discount",
+      "title": "AED 1,000 - 6,000 Discount",
+      "description": "Receive an instant discount or cashback between AED 1,000 and AED 6,000 when booking premium venue and decor packages.",
+      "icon": "CreditCard",
+      "terms": [
+        "Discount amount depends on total package value",
+        "Applicable to premium decor and venue bookings",
+        "Subject to availability"
+      ],
+      "link": "/contact",
+      "fullDetails": "Maximize your budget with our tiered discount system for premium bookings. The more comprehensive your package, the larger your instant discount.\n\nCancellation & Refunds:\n- In the event of a cancellation, the discount is voided, and standard cancellation terms apply to the original gross amount.\n- Cashback (if chosen over instant discount) is processed 14 days after the successful completion of the event.\n\nAgreements:\n- AED 1,000 discount applies to packages over AED 20,000.\n- AED 6,000 discount applies to packages over AED 100,000.\n- Cannot be combined with the Early Bird 15% discount."
+    },
+    {
+      "id": "free-online-planner",
+      "title": "Free Online Planner Claim",
+      "description": "Start planning your dream wedding right now with our interactive online package builder. Claim your free session today.",
+      "icon": "Calendar",
+      "terms": [
+        "100% Free to use",
+        "Instant cost estimation",
+        "Customizable packages"
+      ],
+      "badge": "New Feature",
+      "link": "/package-builder",
+      "fullDetails": "Take control of your wedding planning with our state-of-the-art online package builder. Mix and match services, select your celebrations, and get an instant estimate.\n\nCancellation & Refunds:\n- The online planner is a free tool and does not require any upfront payment or commitment.\n- No refunds or cancellations apply to the use of this digital tool.\n\nAgreements:\n- Estimates provided by the online planner are subject to final confirmation by our team.\n- Prices may vary based on specific dates, availability, and custom requests not covered in the standard tool."
+    }
+  ]
+}

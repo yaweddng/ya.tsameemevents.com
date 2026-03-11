@@ -1,0 +1,680 @@
+{
+  "pages": [
+    {
+      "id": "home",
+      "title": "Home",
+      "slug": "home",
+      "published": true,
+      "description": "YA Wedding is Dubai's premier luxury wedding planner. We offer full wedding planning, stage decoration, rentals, and more.",
+      "widgets": [
+        {
+          "id": "h1",
+          "type": "hero",
+          "config": {
+            "title": "Crafting Your Dream Wedding with Elegance",
+            "subtitle": "From intimate gatherings to grand celebrations, we bring your vision to life in the heart of Dubai.",
+            "ctaText": "Explore Services",
+            "ctaLink": "/services",
+            "image": "https://tsameemevents.com/wp-content/uploads/luxury-outdoor-wedding-reception-sunset-lakeview.webp",
+            "heightType": "pixel"
+          },
+          "weight": 0
+        },
+        {
+          "id": "h2",
+          "type": "promos",
+          "config": {
+            "title": "On-going Promos & Discounts",
+            "subtitle": "Exclusive offers for your luxury wedding in Dubai.",
+            "limit": 3,
+            "headerAlignment": "left"
+          },
+          "weight": 1
+        },
+        {
+          "id": "h3",
+          "type": "services",
+          "config": {
+            "title": "Our Core Services",
+            "subtitle": "We offer a comprehensive range of services tailored to meet the highest standards of luxury and sophistication.",
+            "limit": 3,
+            "headerAlignment": "left"
+          },
+          "weight": 2
+        },
+        {
+          "id": "h4",
+          "type": "package_builder",
+          "config": {
+            "title": "Build Your Custom Package",
+            "subtitle": "Select your preferred services and get an instant estimate for your luxury wedding in Dubai."
+          },
+          "weight": 3
+        },
+        {
+          "id": "h5",
+          "type": "testimonials",
+          "config": {
+            "title": "What Our Clients Say"
+          },
+          "weight": 4
+        },
+        {
+          "id": "h6",
+          "type": "blogs",
+          "config": {
+            "title": "Latest from Our Blog",
+            "limit": 2,
+            "headerAlignment": "center"
+          },
+          "weight": 5
+        },
+        {
+          "id": "h_pwa",
+          "type": "pwa_install",
+          "config": {
+            "title": "How to Install"
+          },
+          "weight": 6
+        },
+        {
+          "id": "h7",
+          "type": "cta",
+          "config": {
+            "title": "Ready to Start Planning Your Perfect Day?",
+            "subtitle": "Contact our luxury event specialists today for a personalized consultation.",
+            "buttonText": "Contact Us Now",
+            "link": "/contact",
+            "image": "https://tsameemevents.com/wp-content/uploads/luxury-mansion-wedding-decor-outdoor-lighting.webp"
+          },
+          "weight": 7
+        }
+      ]
+    },
+    {
+      "id": "about",
+      "title": "About Us",
+      "slug": "about",
+      "published": true,
+      "description": "Learn more about YA Wedding, Dubai's premier luxury wedding and event planning agency.",
+      "widgets": [
+        {
+          "id": "a1",
+          "type": "about",
+          "config": {},
+          "weight": 0
+        }
+      ]
+    },
+    {
+      "id": "services",
+      "title": "Our Services",
+      "slug": "services",
+      "published": true,
+      "description": "Explore our range of luxury wedding and event services in Dubai.",
+      "widgets": [
+        {
+          "id": "s1",
+          "type": "services",
+          "config": {
+            "title": "Our Services",
+            "limit": 12
+          },
+          "weight": 0
+        }
+      ]
+    },
+    {
+      "id": "gallery",
+      "title": "Gallery",
+      "slug": "gallery",
+      "published": true,
+      "description": "View our portfolio of luxury weddings and events in Dubai.",
+      "widgets": [
+        {
+          "id": "g1",
+          "type": "gallery",
+          "config": {
+            "title": "Our Portfolio"
+          },
+          "weight": 0
+        }
+      ]
+    },
+    {
+      "id": "blog",
+      "title": "Blog",
+      "slug": "blog",
+      "published": true,
+      "description": "Wedding and event insights from Dubai's leading luxury event planners.",
+      "widgets": [
+        {
+          "id": "b1",
+          "type": "blogs",
+          "config": {
+            "title": "Latest News",
+            "limit": 12
+          },
+          "weight": 0
+        }
+      ]
+    },
+    {
+      "id": "contact",
+      "title": "Contact Us",
+      "slug": "contact",
+      "published": true,
+      "description": "Get in touch with YA Wedding for your luxury event in Dubai.",
+      "widgets": [
+        {
+          "id": "c1",
+          "type": "contact",
+          "config": {},
+          "weight": 0
+        }
+      ]
+    },
+    {
+      "id": "faq",
+      "title": "FAQ",
+      "slug": "faq",
+      "published": true,
+      "description": "Frequently asked questions about planning a luxury wedding in Dubai.",
+      "widgets": [
+        {
+          "id": "f1",
+          "type": "faq",
+          "config": {
+            "title": "Frequently Asked Questions"
+          },
+          "weight": 1
+        }
+      ],
+      "schema": ""
+    },
+    {
+      "id": "discounts",
+      "title": "Discounts & Promos",
+      "slug": "discounts",
+      "published": true,
+      "description": "Exclusive luxury wedding discounts and promos.",
+      "widgets": [
+        {
+          "id": "d1",
+          "type": "discounts",
+          "config": {},
+          "weight": 0
+        }
+      ]
+    },
+    {
+      "id": "package-builder",
+      "title": "Package Builder",
+      "slug": "package-builder",
+      "published": true,
+      "description": "Build your own luxury wedding package in Dubai.",
+      "widgets": [
+        {
+          "id": "pb1",
+          "type": "package_builder",
+          "config": {},
+          "weight": 0
+        }
+      ]
+    },
+    {
+      "id": "packages",
+      "title": "Event Packages",
+      "slug": "packages",
+      "published": true,
+      "description": "Explore our luxury event packages.",
+      "widgets": [
+        {
+          "id": "p1",
+          "type": "services",
+          "config": {
+            "title": "Event Packages",
+            "category": "Packages",
+            "limit": 12
+          },
+          "weight": 0
+        }
+      ]
+    },
+    {
+      "id": "help-center",
+      "title": "Help Center",
+      "slug": "help-center",
+      "published": true,
+      "description": "Find answers to your questions and get support for your luxury event planning journey with YA Wedding.",
+      "widgets": [
+        {
+          "id": "hc1",
+          "type": "hero",
+          "config": {
+            "badge": "Support Center",
+            "title": "How Can We Help You?",
+            "subtitle": "Your journey to a perfect celebration starts with the right support. Explore our resources or contact our specialists.",
+            "image": "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1920&q=80",
+            "heightType": "pixel",
+            "customHeight": 400
+          },
+          "weight": 0
+        },
+        {
+          "id": "hc2",
+          "type": "features",
+          "config": {
+            "title": "Support Categories",
+            "subtitle": "Browse through our most common support topics to find quick answers.",
+            "centered": true,
+            "items": [
+              {
+                "icon": "Calendar",
+                "title": "Getting Started",
+                "description": "Learn about our planning process, from the initial consultation to the final walkthrough. We guide you every step of the way."
+              },
+              {
+                "icon": "CreditCard",
+                "title": "Booking & Payments",
+                "description": "Understand our deposit structures, payment schedules, and how to secure your preferred dates and vendors."
+              },
+              {
+                "icon": "Star",
+                "title": "Vendor Management",
+                "description": "How we select and coordinate with Dubai's elite vendors to ensure your event meets our luxury standards."
+              }
+            ]
+          },
+          "weight": 1
+        },
+        {
+          "id": "hc3",
+          "type": "faq",
+          "config": {
+            "title": "Frequently Asked Questions",
+            "subtitle": "Quick answers to the most common inquiries from our clients.",
+            "items": [
+              {
+                "q": "How far in advance should I book?",
+                "a": "For major weddings in Dubai, we recommend booking 6-12 months in advance to secure the best venues and vendors."
+              },
+              {
+                "q": "Do you handle destination weddings?",
+                "a": "Yes, while we specialize in Dubai, we have extensive experience managing luxury destination weddings across the UAE and internationally."
+              },
+              {
+                "q": "Can I use my own vendors?",
+                "a": "Absolutely. While we have a curated list of elite partners, we are happy to work with any professional vendors you prefer, provided they meet our quality standards."
+              }
+            ]
+          },
+          "weight": 2
+        },
+        {
+          "id": "hc4",
+          "type": "cta",
+          "config": {
+            "title": "Still Need Assistance?",
+            "subtitle": "Our luxury event specialists are available 24/7 to provide personalized support.",
+            "buttonText": "Contact Support",
+            "link": "/contact",
+            "image": "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1920&q=80"
+          },
+          "weight": 3
+        }
+      ]
+    },
+    {
+      "id": "trust-safety",
+      "title": "Trust & Safety",
+      "slug": "trust-safety",
+      "published": true,
+      "description": "Your safety and trust are our top priorities. Learn how YA Wedding ensures a secure and premium experience.",
+      "widgets": [
+        {
+          "id": "ts1",
+          "type": "hero",
+          "config": {
+            "badge": "Security First",
+            "title": "Your Trust, Our Priority",
+            "subtitle": "We are committed to providing a secure, transparent, and high-quality planning experience for every client.",
+            "image": "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&w=1920&q=80",
+            "heightType": "pixel",
+            "customHeight": 400
+          },
+          "weight": 0
+        },
+        {
+          "id": "ts2",
+          "type": "features",
+          "config": {
+            "title": "Our Safety Standards",
+            "subtitle": "How we protect your investment and ensure the success of your event.",
+            "centered": true,
+            "items": [
+              {
+                "icon": "Tag",
+                "title": "Rigorous Vetting",
+                "description": "Every vendor in our network undergoes a comprehensive background check and quality assessment."
+              },
+              {
+                "icon": "CreditCard",
+                "title": "Secure Payments",
+                "description": "We utilize industry-leading encryption and secure payment gateways to protect your financial data."
+              },
+              {
+                "icon": "Gift",
+                "title": "Full Insurance",
+                "description": "YA Wedding maintains extensive liability insurance, providing you with total peace of mind."
+              }
+            ]
+          },
+          "weight": 1
+        },
+        {
+          "id": "ts3",
+          "type": "cta",
+          "config": {
+            "title": "Experience Secure Planning",
+            "subtitle": "Start your journey with a partner you can truly rely on.",
+            "buttonText": "Get Started",
+            "link": "/contact",
+            "image": "https://images.unsplash.com/photo-1522158634129-4483665977bb?auto=format&fit=crop&w=1920&q=80"
+          },
+          "weight": 2
+        }
+      ]
+    },
+    {
+      "id": "terms-of-service",
+      "title": "Terms of Service",
+      "slug": "terms-of-service",
+      "published": true,
+      "description": "The legal framework for our partnership. Please review our terms and conditions.",
+      "widgets": [
+        {
+          "id": "tos1",
+          "type": "hero",
+          "config": {
+            "badge": "Legal Agreement",
+            "title": "Terms of Service",
+            "subtitle": "Understanding the foundation of our professional relationship and service delivery.",
+            "image": "https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&w=1920&q=80",
+            "heightType": "pixel",
+            "customHeight": 400
+          },
+          "weight": 0
+        },
+        {
+          "id": "tos2",
+          "type": "text",
+          "config": {
+            "title": "Legal Framework",
+            "subtitle": "Key terms governing the use of our platform and services.",
+            "centered": false,
+            "content": "### 1. Acceptance of Terms\nBy accessing or using the YA Wedding platform, you agree to be bound by these Terms of Service and all applicable laws and regulations in the UAE.\n\n### 2. Scope of Services\nYA Wedding provides event planning, coordination, and management services. The specific scope of work for each project will be defined in a separate Service Agreement.\n\n### 3. User Responsibilities\nClients are responsible for providing accurate information, timely feedback, and adhering to the agreed-upon payment schedules.\n\n### 4. Intellectual Property\nAll designs, concepts, and materials created by YA Wedding remain our intellectual property unless otherwise agreed upon in writing.\n\n### 5. Limitation of Liability\nYA Wedding shall not be liable for any indirect, incidental, or consequential damages arising from the use of our services or the actions of third-party vendors."
+          },
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "id": "privacy-policy",
+      "title": "Privacy Policy",
+      "slug": "privacy-policy",
+      "published": true,
+      "description": "How we protect and manage your personal information at YA Wedding.",
+      "widgets": [
+        {
+          "id": "pp1",
+          "type": "hero",
+          "config": {
+            "badge": "Data Protection",
+            "title": "Your Privacy Matters",
+            "subtitle": "We are dedicated to protecting your personal data and maintaining your trust through transparency.",
+            "image": "https://images.unsplash.com/photo-1507676184212-d03ab07a01bf?auto=format&fit=crop&w=1920&q=80",
+            "heightType": "pixel",
+            "customHeight": 400
+          },
+          "weight": 0
+        },
+        {
+          "id": "pp2",
+          "type": "text",
+          "config": {
+            "title": "Data Protection",
+            "subtitle": "Our commitment to your personal information security.",
+            "centered": false,
+            "content": "### Information Collection\nWe collect information necessary to provide our luxury planning services, including contact details, event preferences, and financial information for billing purposes.\n\n### How We Use Your Data\nYour information is used to personalize your experience, process transactions, and communicate important updates regarding your event.\n\n### Data Sharing\nWe only share your information with trusted third-party vendors who are essential to the execution of your event. We never sell your data to third parties.\n\n### Your Rights\nYou have the right to access, correct, or request the deletion of your personal data at any time. Contact our privacy officer for assistance."
+          },
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "id": "partnerships",
+      "title": "Partnerships",
+      "slug": "partnerships",
+      "published": true,
+      "description": "Collaborate with Dubai's leading luxury wedding planner.",
+      "widgets": [
+        {
+          "id": "ps1",
+          "type": "hero",
+          "config": {
+            "title": "Partnerships",
+            "subtitle": "Let's create unforgettable moments together.",
+            "alignment": "center",
+            "height": "min-h-[40vh]"
+          },
+          "weight": 0
+        },
+        {
+          "id": "ps2",
+          "type": "text",
+          "config": {
+            "content": "## Why Partner with Us?\nYA Wedding is at the forefront of the luxury event industry in Dubai. We are always looking for exceptional vendors and creative partners.\n\n## How to Apply\nIf you are a vendor or service provider interested in collaborating, please reach out via our contact form with your portfolio.",
+            "alignment": "left"
+          },
+          "weight": 1
+        },
+        {
+          "id": "ps3",
+          "type": "cta",
+          "config": {
+            "title": "Ready to Partner?",
+            "subtitle": "Join our network of elite wedding professionals.",
+            "buttonText": "Get in Touch",
+            "link": "/contact"
+          },
+          "weight": 2
+        }
+      ]
+    },
+    {
+      "id": "return-refund",
+      "title": "Return and Refund",
+      "slug": "return-refund",
+      "published": true,
+      "description": "Our transparent policies regarding cancellations, returns, and refunds.",
+      "widgets": [
+        {
+          "id": "rr1",
+          "type": "hero",
+          "config": {
+            "badge": "Refund Policy",
+            "title": "Refund & Return Policy",
+            "subtitle": "Clear and fair policies designed to provide flexibility and peace of mind for our clients.",
+            "image": "https://images.unsplash.com/photo-1513151233558-d860c5398176?auto=format&fit=crop&w=1920&q=80",
+            "heightType": "pixel",
+            "customHeight": 400
+          },
+          "weight": 0
+        },
+        {
+          "id": "rr2",
+          "type": "text",
+          "config": {
+            "title": "Policy Details",
+            "subtitle": "Understanding our cancellation and return procedures.",
+            "centered": false,
+            "content": "### Service Cancellations\nCancellations made more than 60 days before the event are eligible for a 50% refund of the deposit. Cancellations within 30 days are non-refundable but may be credited toward a future date.\n\n### Rental Item Returns\nAll rental equipment must be returned within 24 hours of the event conclusion. Items must be in their original condition to avoid damage fees.\n\n### Refund Processing\nApproved refunds are processed within 14 business days. The funds will be returned to the original payment method used during booking.\n\n### Force Majeure\nIn the event of government-mandated restrictions or natural disasters, we offer full flexibility to reschedule your event without penalty."
+          },
+          "weight": 1
+        },
+        {
+          "id": "rr3",
+          "type": "cta",
+          "config": {
+            "title": "Have Questions?",
+            "subtitle": "Our team is here to clarify any policy details for you.",
+            "buttonText": "Contact Us",
+            "link": "/contact",
+            "image": "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1920&q=80"
+          },
+          "weight": 2
+        }
+      ]
+    },
+    {
+      "id": "mobile-app",
+      "title": "Mobile App Experience",
+      "slug": "mobile-app",
+      "published": true,
+      "description": "Experience the future of event planning with our mobile app.",
+      "widgets": [],
+      "visualLayout": {
+        "sections": [
+          {
+            "id": "hero-section",
+            "columns": [
+              {
+                "id": "hero-col-1",
+                "width": "60%",
+                "components": [
+                  {
+                    "id": "hero-badge",
+                    "type": "text",
+                    "content": "COMING SOON",
+                    "className": "inline-block px-4 py-1 rounded-full bg-brand/10 text-brand text-xs font-bold tracking-widest mb-6 border border-brand/20"
+                  },
+                  {
+                    "id": "hero-title",
+                    "type": "heading",
+                    "content": "Your Event, \nIn Your Pocket",
+                    "className": "text-6xl md:text-7xl font-bold leading-tight mb-6 text-gradient-brand"
+                  },
+                  {
+                    "id": "hero-subtitle",
+                    "type": "text",
+                    "content": "The ultimate companion for your luxury event planning journey. Stay connected, stay organized, and stay inspired.",
+                    "className": "text-xl text-gray-400 mb-8 max-w-xl"
+                  },
+                  {
+                    "id": "hero-buttons",
+                    "type": "button",
+                    "content": "Get Early Access",
+                    "className": "bg-brand text-dark px-10 py-4 rounded-full font-bold text-lg hover:shadow-2xl hover:shadow-brand/20 transition-all",
+                    "settings": { "link": "/contact" }
+                  }
+                ]
+              },
+              {
+                "id": "hero-col-2",
+                "width": "40%",
+                "components": [
+                  {
+                    "id": "hero-image",
+                    "type": "image",
+                    "content": "https://picsum.photos/seed/mobile-app-hero/800/1600",
+                    "className": "animate-float rounded-[3rem] shadow-2xl border-4 border-white/10",
+                    "animate": {
+                      "initial": { "opacity": 0, "scale": 0.8, "rotate": -5 },
+                      "animate": { "opacity": 1, "scale": 1, "rotate": 0 },
+                      "transition": { "duration": 0.8, "ease": "easeOut" }
+                    }
+                  }
+                ]
+              }
+            ],
+            "style": {
+              "paddingTop": "120px",
+              "paddingBottom": "120px",
+              "background": "radial-gradient(circle at top right, rgba(0, 200, 150, 0.05), transparent)"
+            }
+          },
+          {
+            "id": "features-section",
+            "columns": [
+              {
+                "id": "feat-col-1",
+                "width": "100%",
+                "components": [
+                  {
+                    "id": "feat-title",
+                    "type": "heading",
+                    "content": "Experience Excellence",
+                    "className": "text-4xl font-bold text-center mb-16"
+                  }
+                ]
+              },
+              {
+                "id": "feat-col-2",
+                "width": "33.33%",
+                "components": [
+                  {
+                    "id": "feat-1",
+                    "type": "cta_block",
+                    "content": {
+                      "title": "Live Chat",
+                      "subtitle": "Instant communication with your dedicated event manager.",
+                      "buttonText": "Learn More"
+                    },
+                    "className": "glass-card h-full border-brand/10 hover:border-brand/30 transition-colors"
+                  }
+                ]
+              },
+              {
+                "id": "feat-col-3",
+                "width": "33.33%",
+                "components": [
+                  {
+                    "id": "feat-2",
+                    "type": "cta_block",
+                    "content": {
+                      "title": "Budget Control",
+                      "subtitle": "Real-time tracking of every dirham spent on your celebration.",
+                      "buttonText": "Learn More"
+                    },
+                    "className": "glass-card h-full border-brand/10 hover:border-brand/30 transition-colors"
+                  }
+                ]
+              },
+              {
+                "id": "feat-col-4",
+                "width": "33.33%",
+                "components": [
+                  {
+                    "id": "feat-3",
+                    "type": "cta_block",
+                    "content": {
+                      "title": "Guest List",
+                      "subtitle": "Manage RSVPs and seating charts with a simple swipe.",
+                      "buttonText": "Learn More"
+                    },
+                    "className": "glass-card h-full border-brand/10 hover:border-brand/30 transition-colors"
+                  }
+                ]
+              }
+            ],
+            "style": {
+              "paddingTop": "80px",
+              "paddingBottom": "120px"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}
