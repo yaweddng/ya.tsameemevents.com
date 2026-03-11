@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, useParams, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useParams, useLocation, Navigate } from 'react-router-dom';
 import { HelmetProvider, Helmet } from 'react-helmet-async';
 import { Header, Footer } from './components/Layout';
 import { Home } from './pages/Home';
@@ -15,6 +15,7 @@ import { PackageCustomizer } from './pages/PackageCustomizer';
 import { Discounts } from './pages/Discounts';
 import Partnerships from './pages/Partnerships';
 import { Login } from './pages/Login';
+import Inbox from './pages/Inbox';
 import { UserDashboard } from './pages/UserDashboard';
 import { MobileApp } from './pages/MobileApp';
 import { AdminSecurityCheck } from './pages/AdminSecurityCheck';
@@ -28,6 +29,24 @@ import { BookingPage } from './pages/BookingPage';
 import { SiteSettings } from './types';
 
 import { useCMSData } from './hooks/useCMSData';
+import { useAuth } from './hooks/useAuth';
+
+const ProtectedRoute = ({ children, role }: { children: React.ReactNode; role?: 'admin' | 'customer' | 'user' }) => {
+  const { user, loading } = useAuth();
+  const location = useLocation();
+
+  if (loading) return <div className="min-h-screen bg-dark flex items-center justify-center text-brand font-bold">Checking authentication...</div>;
+
+  if (!user) {
+    return <Navigate to="/login" state={{ from: location }} replace />;
+  }
+
+  if (role && user.role !== role && user.role !== 'admin') {
+    return <Navigate to="/" replace />;
+  }
+
+  return <>{children}</>;
+};
 
 const SEO = ({ title, description, schema, image }: { title: string; description: string; schema?: any; image?: string }) => {
   const location = useLocation();
@@ -163,11 +182,24 @@ export default function App() {
                   <Route path="/partnerships" element={<DynamicPageWrapper slugOverride="partnerships" />} />
                   <Route path="/return-refund" element={<DynamicPageWrapper slugOverride="return-refund" />} />
                   <Route path="/booking/:id" element={<BookingPageWrapper />} />
-                  <Route path="/admin" element={<Admin />} />
+                  <Route path="/inbox" element={
+                    <ProtectedRoute>
+                      <Inbox />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/admin" element={
+                    <ProtectedRoute role="admin">
+                      <Admin />
+                    </ProtectedRoute>
+                  } />
                   <Route path={adminSlug} element={<AdminSecurityCheck />} />
                   <Route path="/login" element={<Login />} />
                   <Route path="/mobile-app" element={<MobileApp />} />
-                  <Route path="/dashboard" element={<UserDashboard />} />
+                  <Route path="/dashboard" element={
+                    <ProtectedRoute>
+                      <UserDashboard />
+                    </ProtectedRoute>
+                  } />
                   <Route path="/u/:username" element={<DynamicPageWrapper isUserSite />} />
                   <Route path="/u/:username/:slug" element={<DynamicPageWrapper isUserSite />} />
                   <Route path="/p/:slug" element={<DynamicPageWrapper />} />

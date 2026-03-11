@@ -1,13 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Download, X, Smartphone, Sparkles, Share, PlusSquare } from 'lucide-react';
+import { useAuth } from '../hooks/useAuth';
 
 export const PWAInstallPopup = () => {
   const [show, setShow] = useState(false);
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
   const [showInstructions, setShowInstructions] = useState(false);
+  const { user } = useAuth();
 
   useEffect(() => {
+    // 1. Don't show if already shown in this session
+    const hasShownThisSession = sessionStorage.getItem('pwa_popup_shown');
+    if (hasShownThisSession) return;
+
+    // 2. Don't show if user is logged in
+    if (user) return;
+
     const handleBeforeInstallPrompt = (e: any) => {
       e.preventDefault();
       setDeferredPrompt(e);
@@ -22,6 +31,7 @@ export const PWAInstallPopup = () => {
     if (!isStandalone) {
       timer = setTimeout(() => {
         setShow(true);
+        sessionStorage.setItem('pwa_popup_shown', 'true');
       }, 10000);
     }
 

@@ -5,13 +5,40 @@ import { useNavigate } from 'react-router-dom';
 
 export const Login = () => {
   const [mode, setMode] = React.useState<'login' | 'register'>('login');
+  const [step, setStep] = React.useState<'details' | 'otp'>('details');
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
   const [name, setName] = React.useState('');
   const [username, setUsername] = React.useState('');
+  const [otp, setOtp] = React.useState('');
   const [error, setError] = React.useState('');
   const [loading, setLoading] = React.useState(false);
   const navigate = useNavigate();
+
+  const handleSendOTP = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+    setLoading(true);
+
+    try {
+      const res = await fetch('/api/auth/send-otp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+      });
+
+      const data = await res.json();
+      if (res.ok) {
+        setStep('otp');
+      } else {
+        setError(data.error || 'Failed to send OTP');
+      }
+    } catch (err) {
+      setError('Failed to connect to server');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -20,10 +47,11 @@ export const Login = () => {
 
     const endpoint = mode === 'login' ? '/api/auth/login' : '/api/auth/register';
     const body = mode === 'login' 
-      ? { email, password } 
-      : { email, password, name, username };
+      ? { email: email.trim(), password } 
+      : { email: email.trim(), password, name, username, otp: otp.trim() };
 
     try {
+      // If registering, we need to verify OTP first or it's already verified in the register endpoint
       const res = await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -32,14 +60,22 @@ export const Login = () => {
 
       const data = await res.json();
       if (res.ok) {
-        localStorage.setItem('ya-token', data.token || `user-token-${data.user.id}`);
-        localStorage.setItem('ya-user', JSON.stringify(data.user));
-        
-        if (data.user.role === 'admin') {
-          navigate('/admin');
-        } else {
-          navigate('/dashboard');
+        if (mode === 'register') {
+          setMode('login');
+          setStep('details');
+          setError('');
+          setEmail('');
+          setPassword('');
+          setOtp('');
+          // Show success message
+          alert('Account created successfully! Please log in.');
+          return;
         }
+
+        localStorage.setItem('ya_token', data.token || `user-token-${data.user.id}`);
+        localStorage.setItem('ya_user', JSON.stringify(data.user));
+        
+        navigate('/inbox');
       } else {
         setError(data.error || 'Something went wrong');
       }
@@ -67,23 +103,25 @@ export const Login = () => {
             {mode === 'login' ? <LogIn size={32} /> : <UserPlus size={32} />}
           </div>
           <h1 className="text-3xl font-bold mb-2">
-            {mode === 'login' ? 'Welcome Back' : 'Join the Partnership'}
+            {mode === 'login' ? 'Welcome Back' : step === 'details' ? 'Join the Partnership' : 'Verify Email'}
           </h1>
           <p className="text-gray-400">
             {mode === 'login' 
               ? 'Enter your credentials to access your dashboard' 
-              : 'Create your partner account to start building'}
+              : step === 'details' 
+                ? 'Create your partner account to start building'
+                : `We've sent a code to ${email}`}
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="glass-card p-8 rounded-[32px] border border-white/5 space-y-6">
+        <form onSubmit={mode === 'register' && step === 'details' ? handleSendOTP : handleSubmit} className="glass-card p-8 rounded-[32px] border border-white/5 space-y-6">
           {error && (
             <div className="p-4 bg-red-500/10 border border-red-500/20 rounded-xl text-red-400 text-sm text-center">
               {error}
             </div>
           )}
 
-          {mode === 'register' && (
+          {mode === 'register' && step === 'details' && (
             <>
               <div className="space-y-2">
                 <label className="text-xs font-bold text-gray-500 uppercase ml-1">Full Name</label>
@@ -117,35 +155,79 @@ export const Login = () => {
             </>
           )}
 
-          <div className="space-y-2">
-            <label className="text-xs font-bold text-gray-500 uppercase ml-1">Email Address</label>
-            <div className="relative">
-              <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500" size={18} />
-              <input
-                required
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full bg-dark border border-white/10 rounded-xl pl-12 pr-4 py-3.5 focus:border-brand outline-none transition-all"
-                placeholder="email@example.com"
-              />
+          {mode === 'register' && step === 'otp' && (
+            <div className="space-y-2">
+              <label className="text-xs font-bold text-gray-500 uppercase ml-1">Verification Code (OTP)</label>
+              <div className="relative">
+                <ShieldCheck className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500" size={18} />
+                <input
+                  required
+                  type="text"
+                  maxLength={6}
+                  value={otp}
+                  onChange={(e) => setOtp(e.target.value.replace(/\D/g, ''))}
+                  className="w-full bg-dark border border-white/10 rounded-xl pl-12 pr-4 py-3.5 focus:border-brand outline-none transition-all text-center tracking-[1em] font-mono text-xl"
+                  placeholder="000000"
+                />
+              </div>
+              <div className="flex flex-col gap-2">
+                <p className="text-center">
+                  <button 
+                    type="button"
+                    disabled={loading}
+                    onClick={handleSendOTP}
+                    className="text-xs text-brand hover:underline disabled:opacity-50"
+                  >
+                    Resend Code
+                  </button>
+                </p>
+                <p className="text-center">
+                  <button 
+                    type="button"
+                    disabled={loading}
+                    onClick={() => setStep('details')}
+                    className="text-xs text-gray-500 hover:text-white transition-colors disabled:opacity-50"
+                  >
+                    Change Email / Details
+                  </button>
+                </p>
+              </div>
             </div>
-          </div>
+          )}
 
-          <div className="space-y-2">
-            <label className="text-xs font-bold text-gray-500 uppercase ml-1">Password</label>
-            <div className="relative">
-              <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500" size={18} />
-              <input
-                required
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full bg-dark border border-white/10 rounded-xl pl-12 pr-4 py-3.5 focus:border-brand outline-none transition-all"
-                placeholder="••••••••"
-              />
-            </div>
-          </div>
+          {step === 'details' && (
+            <>
+              <div className="space-y-2">
+                <label className="text-xs font-bold text-gray-500 uppercase ml-1">Email Address</label>
+                <div className="relative">
+                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500" size={18} />
+                  <input
+                    required
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="w-full bg-dark border border-white/10 rounded-xl pl-12 pr-4 py-3.5 focus:border-brand outline-none transition-all"
+                    placeholder="email@example.com"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-xs font-bold text-gray-500 uppercase ml-1">Password</label>
+                <div className="relative">
+                  <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500" size={18} />
+                  <input
+                    required
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="w-full bg-dark border border-white/10 rounded-xl pl-12 pr-4 py-3.5 focus:border-brand outline-none transition-all"
+                    placeholder="••••••••"
+                  />
+                </div>
+              </div>
+            </>
+          )}
 
           <button
             disabled={loading}
@@ -155,7 +237,7 @@ export const Login = () => {
               <div className="w-5 h-5 border-2 border-dark border-t-transparent rounded-full animate-spin" />
             ) : (
               <>
-                {mode === 'login' ? 'Sign In' : 'Create Account'}
+                {mode === 'login' ? 'Sign In' : step === 'details' ? 'Get Verification Code' : 'Verify & Register'}
                 <ArrowRight size={18} />
               </>
             )}
@@ -164,7 +246,11 @@ export const Login = () => {
           <div className="text-center pt-4">
             <button
               type="button"
-              onClick={() => setMode(mode === 'login' ? 'register' : 'login')}
+              onClick={() => {
+                setMode(mode === 'login' ? 'register' : 'login');
+                setStep('details');
+                setError('');
+              }}
               className="text-sm text-gray-400 hover:text-brand transition-colors"
             >
               {mode === 'login' 

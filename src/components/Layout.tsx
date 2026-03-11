@@ -151,6 +151,13 @@ export const Header = () => {
             ))}
             
             <div className="flex items-center gap-4 border-l border-white/10 pl-6">
+              <Link 
+                to="/inbox"
+                className="text-gray-400 hover:text-brand transition-colors relative"
+              >
+                <MessageSquare size={20} />
+                <span className="absolute -top-1 -right-1 w-2 h-2 bg-brand rounded-full animate-pulse" />
+              </Link>
               <button 
                 onClick={() => setIsSearchOpen(!isSearchOpen)}
                 className="text-gray-400 hover:text-brand transition-colors"
@@ -182,6 +189,13 @@ export const Header = () => {
             >
               <Search size={20} />
             </button>
+            <Link 
+              to="/inbox"
+              className="text-gray-400 hover:text-brand transition-colors relative"
+            >
+              <MessageSquare size={20} />
+              <span className="absolute -top-1 -right-1 w-2 h-2 bg-brand rounded-full animate-pulse" />
+            </Link>
             <button className="text-white" onClick={() => setIsOpen(!isOpen)}>
               {isOpen ? <X /> : <Menu />}
             </button>

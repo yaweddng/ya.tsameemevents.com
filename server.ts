@@ -1,5 +1,7 @@
 import express from "express";
 import { createServer as createViteServer } from "vite";
+import { createServer } from "http";
+import { Server } from "socket.io";
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -13,9 +15,110 @@ const __dirname = path.dirname(__filename);
 
 async function startServer() {
   const app = express();
+  const httpServer = createServer(app);
+  const io = new Server(httpServer, {
+    cors: {
+      origin: "*",
+      methods: ["GET", "POST"]
+    }
+  });
   const PORT = 3000;
 
   app.use(express.json());
+
+  const transporter = nodemailer.createTransport({
+    host: 'smtp.hostinger.com',
+    port: 465,
+    secure: true,
+    auth: {
+      user: 'info@tsameemevents.com',
+      pass: 'JaKa1@3RiYa'
+    }
+  });
+
+  const sendEmail = async (to: string, subject: string, text: string, html: string) => {
+    try {
+      await transporter.sendMail({
+        from: '"YA Wedding" <info@tsameemevents.com>',
+        to,
+        subject,
+        text,
+        html
+      });
+      return true;
+    } catch (error) {
+      console.error("Email send error:", error);
+      return false;
+    }
+  };
+
+  // Background task for unread message notifications (every 5 minutes)
+  setInterval(async () => {
+    const tenMinutesAgo = new Date(Date.now() - 10 * 60 * 1000).toISOString();
+    
+    // Find unread messages older than 10 minutes that haven't had a notification sent
+    const unreadMessages = db.prepare(`
+      SELECT m.*, u.email as receiver_email, u.name as receiver_name, s.name as sender_name
+      FROM messages m
+      JOIN users u ON m.receiver_id = u.id
+      JOIN users s ON m.sender_id = s.id
+      WHERE m.is_read = 0 
+        AND m.notification_sent = 0 
+        AND m.created_at < ?
+    `).all(tenMinutesAgo) as any[];
+
+    for (const msg of unreadMessages) {
+      const subject = `New message from ${msg.sender_name}`;
+      const html = `
+        <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
+          <h2 style="color: #00C896;">You have a new message!</h2>
+          <p>Hi ${msg.receiver_name},</p>
+          <p>You have an unread message from <strong>${msg.sender_name}</strong>:</p>
+          <div style="background: #f9f9f9; padding: 15px; border-radius: 5px; margin: 20px 0; font-style: italic;">
+            "${msg.content}"
+          </div>
+          <p>Please log in to your dashboard to reply.</p>
+          <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;" />
+          <p style="font-size: 12px; color: #999;">YA Wedding Platform</p>
+        </div>
+      `;
+      
+      const sent = await sendEmail(msg.receiver_email, subject, `You have a new message from ${msg.sender_name}: "${msg.content}"`, html);
+      if (sent) {
+        db.prepare("UPDATE messages SET notification_sent = 1 WHERE id = ?").run(msg.id);
+      }
+    }
+
+    // Also check for messages to admin
+    const adminUnreadMessages = db.prepare(`
+      SELECT m.*, s.name as sender_name
+      FROM messages m
+      JOIN users s ON m.sender_id = s.id
+      WHERE m.receiver_id = 'admin' 
+        AND m.is_read = 0 
+        AND m.notification_sent = 0 
+        AND m.created_at < ?
+    `).all(tenMinutesAgo) as any[];
+
+    for (const msg of adminUnreadMessages) {
+      const subject = `Admin: New message from ${msg.sender_name}`;
+      const html = `
+        <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
+          <h2 style="color: #00C896;">New Message for Admin</h2>
+          <p>A user <strong>${msg.sender_name}</strong> sent a message:</p>
+          <div style="background: #f9f9f9; padding: 15px; border-radius: 5px; margin: 20px 0; font-style: italic;">
+            "${msg.content}"
+          </div>
+          <p>Please log in to the admin portal to reply.</p>
+        </div>
+      `;
+      
+      const sent = await sendEmail('info@tsameemevents.com', subject, `New message from ${msg.sender_name}: "${msg.content}"`, html);
+      if (sent) {
+        db.prepare("UPDATE messages SET notification_sent = 1 WHERE id = ?").run(msg.id);
+      }
+    }
+  }, 5 * 60 * 1000); // Check every 5 minutes
 
   // API Routes
   const SERVICES_PATH = path.join(__dirname, "src/data/services.json");
@@ -42,6 +145,136 @@ async function startServer() {
   const ADMIN_SECURITY_PATH = path.join(__dirname, "src/data/admin_security.json");
   const BLOCKED_IPS_PATH = path.join(__dirname, "src/data/blocked_ips.json");
   const REDIRECTIONS_PATH = path.join(__dirname, "src/data/redirections.json");
+
+  // Socket.io logic
+  io.on("connection", (socket) => {
+    console.log("A user connected:", socket.id);
+
+    socket.on("join", (userId) => {
+      socket.join(userId);
+      console.log(`User ${userId} joined their room`);
+    });
+
+    socket.on("send_message", (data) => {
+      const { senderId, receiverId, content } = data;
+      
+      // Save to DB
+      const stmt = db.prepare("INSERT INTO messages (sender_id, receiver_id, content) VALUES (?, ?, ?)");
+      const result = stmt.run(senderId, receiverId, content);
+      const messageId = result.lastInsertRowid;
+
+      const newMessage = {
+        id: messageId,
+        sender_id: senderId,
+        receiver_id: receiverId,
+        content,
+        created_at: new Date().toISOString(),
+        is_read: 0
+      };
+
+      // Emit to receiver
+      io.to(receiverId).emit("new_message", newMessage);
+      // Emit back to sender for confirmation
+      io.to(senderId).emit("message_sent", newMessage);
+    });
+
+    socket.on("disconnect", () => {
+      console.log("User disconnected");
+    });
+  });
+
+  // OTP and Messaging API Routes
+  app.post("/api/auth/send-otp", async (req, res) => {
+    const { email: rawEmail } = req.body;
+    const email = rawEmail?.toLowerCase().trim();
+    if (!email) return res.status(400).json({ error: "Email is required" });
+
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    const expiresAt = new Date(Date.now() + 10 * 60 * 1000).toISOString(); // 10 mins
+
+    try {
+      db.prepare("INSERT OR REPLACE INTO otps (email, otp, expires_at, verified) VALUES (?, ?, ?, 0)").run(email, otp, expiresAt);
+
+      const emailHtml = `
+        <div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 40px; border: 1px solid #f0f0f0; border-radius: 16px; color: #1a1a1a;">
+          <div style="text-align: center; margin-bottom: 30px;">
+            <h1 style="color: #00C896; margin: 0; font-size: 28px; letter-spacing: -1px;">YA Wedding</h1>
+            <p style="color: #666; margin-top: 5px; font-size: 14px; text-transform: uppercase; letter-spacing: 2px;">Partner Verification</p>
+          </div>
+          
+          <div style="background-color: #f9f9f9; padding: 30px; border-radius: 12px; text-align: center; margin-bottom: 30px;">
+            <p style="margin-top: 0; color: #666; font-size: 16px;">Your verification code is:</p>
+            <h2 style="font-size: 48px; margin: 10px 0; color: #1a1a1a; letter-spacing: 10px; font-family: monospace;">${otp}</h2>
+            <p style="margin-bottom: 0; color: #999; font-size: 13px;">This code will expire in 10 minutes.</p>
+          </div>
+          
+          <p style="font-size: 15px; line-height: 1.6; color: #444;">
+            Please enter this code on the registration page to verify your email address and complete your account setup.
+          </p>
+          
+          <hr style="border: none; border-top: 1px solid #eee; margin: 30px 0;" />
+          
+          <p style="font-size: 12px; color: #999; text-align: center; margin-bottom: 0;">
+            If you did not request this code, please ignore this email.<br />
+            &copy; ${new Date().getFullYear()} YA Wedding. All rights reserved.
+          </p>
+        </div>
+      `;
+
+      await sendEmail(email, `${otp} is your YA Wedding verification code`, `Your YA Wedding verification code is: ${otp}. It expires in 10 minutes.`, emailHtml);
+
+      res.json({ success: true, message: "OTP sent successfully" });
+    } catch (e) {
+      console.error("OTP Error:", e);
+      res.status(500).json({ error: "Failed to send OTP" });
+    }
+  });
+
+  const getUserIdFromToken = (authHeader: string | undefined) => {
+    if (!authHeader) return null;
+    if (authHeader === "Bearer ya-admin-secret") return "admin";
+    if (authHeader.startsWith("Bearer user-token-")) return authHeader.replace("Bearer user-token-", "");
+    return null;
+  };
+
+  app.get("/api/messages/:userId", (req, res) => {
+    const { userId } = req.params;
+    const currentUserId = getUserIdFromToken(req.headers.authorization);
+    if (!currentUserId) return res.status(401).json({ error: "Unauthorized" });
+
+    // Users can only see their own messages with admin, or admin can see all
+    if (currentUserId !== 'admin' && currentUserId !== userId) {
+      return res.status(403).json({ error: "Forbidden" });
+    }
+
+    const messages = db.prepare(`
+      SELECT * FROM messages 
+      WHERE (sender_id = ? AND receiver_id = ?) 
+         OR (sender_id = ? AND receiver_id = ?)
+      ORDER BY created_at ASC
+    `).all(currentUserId, userId, userId, currentUserId);
+
+    res.json(messages);
+  });
+
+  app.get("/api/admin/conversations", (req, res) => {
+    if (req.headers.authorization !== "Bearer ya-admin-secret") {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+
+    // Get unique users who have messaged admin
+    const conversations = db.prepare(`
+      SELECT DISTINCT u.id, u.name, u.email, 
+             (SELECT content FROM messages WHERE (sender_id = u.id OR receiver_id = u.id) ORDER BY created_at DESC LIMIT 1) as last_message,
+             (SELECT created_at FROM messages WHERE (sender_id = u.id OR receiver_id = u.id) ORDER BY created_at DESC LIMIT 1) as last_message_at
+      FROM users u
+      JOIN messages m ON (m.sender_id = u.id OR m.receiver_id = u.id)
+      WHERE u.id != 'admin'
+      ORDER BY last_message_at DESC
+    `).all();
+
+    res.json(conversations);
+  });
 
   // Multi-tenant Middleware: Detect site by Host header
   app.use((req, res, next) => {
@@ -251,9 +484,22 @@ async function startServer() {
     }
   });
   app.post("/api/auth/register", async (req, res) => {
-    const { email, password, name, username } = req.body;
+    const { email: rawEmail, password, name, username, otp: rawOtp } = req.body;
+    const email = rawEmail?.toLowerCase().trim();
+    const otp = rawOtp?.trim();
     
     try {
+      // Verify OTP first
+      const otpRecord: any = db.prepare("SELECT * FROM otps WHERE email = ? AND otp = ?").get(email, otp);
+      if (!otpRecord) {
+        console.log(`OTP verification failed for ${email}. Provided: ${otp}`);
+        return res.status(400).json({ error: "Invalid verification code" });
+      }
+      
+      if (new Date(otpRecord.expires_at) < new Date()) {
+        return res.status(400).json({ error: "Verification code has expired" });
+      }
+
       const existingUser = db.prepare("SELECT * FROM users WHERE email = ? OR username = ?").get(email, username);
       if (existingUser) {
         return res.status(400).json({ error: "User already exists" });
@@ -262,18 +508,34 @@ async function startServer() {
       const userId = Math.random().toString(36).substr(2, 9);
       const hashedPassword = await bcrypt.hash(password, 10);
       db.prepare(`
-        INSERT INTO users (id, email, password, name, username)
-        VALUES (?, ?, ?, ?, ?)
-      `).run(userId, email, hashedPassword, name, username);
+        INSERT INTO users (id, email, password, name, username, role)
+        VALUES (?, ?, ?, ?, ?, ?)
+      `).run(userId, email, hashedPassword, name, username, 'customer');
 
-      const siteId = Math.random().toString(36).substr(2, 9);
-      db.prepare(`
-        INSERT INTO sites (id, user_id, title, subdomain)
-        VALUES (?, ?, ?, ?)
-      `).run(siteId, userId, `${name}'s Site`, username);
+      // Delete OTP record after successful registration
+      db.prepare("DELETE FROM otps WHERE email = ?").run(email);
 
-      res.json({ success: true, user: { id: userId, email, name, role: 'user' } });
+      // Send Welcome Email
+      const welcomeHtml = `
+        <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 40px; border: 1px solid #eee; border-radius: 16px;">
+          <h1 style="color: #00C896;">Welcome to YA Wedding!</h1>
+          <p>Hi ${name},</p>
+          <p>Your account has been successfully created. You can now log in to your dashboard and start building your wedding site.</p>
+          <p><strong>Your Details:</strong></p>
+          <ul>
+            <li>Email: ${email}</li>
+            <li>Username: ${username}</li>
+          </ul>
+          <p>If you have any questions, feel free to reach out to us.</p>
+          <hr style="border: none; border-top: 1px solid #eee; margin: 30px 0;" />
+          <p style="font-size: 12px; color: #999;">&copy; ${new Date().getFullYear()} YA Wedding</p>
+        </div>
+      `;
+      await sendEmail(email, "Account Created Successfully - YA Wedding", "Your account has been successfully created at YA Wedding.", welcomeHtml);
+
+      res.json({ success: true, user: { id: userId, email, name, role: 'customer' } });
     } catch (e) {
+      console.error("Registration Error:", e);
       res.status(500).json({ error: "Registration failed" });
     }
   });
@@ -422,13 +684,6 @@ async function startServer() {
   });
 
   // User Dashboard APIs (Multi-tenant)
-  const getUserIdFromToken = (authHeader: string | undefined) => {
-    if (!authHeader) return null;
-    if (authHeader === "Bearer ya-admin-secret") return "admin";
-    if (authHeader.startsWith("Bearer user-token-")) return authHeader.replace("Bearer user-token-", "");
-    return null;
-  };
-
   app.get("/api/user/site", (req, res) => {
     const userId = getUserIdFromToken(req.headers.authorization);
     if (!userId) return res.status(401).json({ error: "Unauthorized" });
@@ -1573,7 +1828,7 @@ async function startServer() {
     });
   }
 
-  app.listen(PORT, "0.0.0.0", () => {
+  httpServer.listen(PORT, "0.0.0.0", () => {
     console.log(`Server running on http://localhost:${PORT}`);
   });
 }

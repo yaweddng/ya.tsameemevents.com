@@ -35,10 +35,36 @@ db.exec(`
     FOREIGN KEY (user_id) REFERENCES users(id)
   );
 
+  CREATE TABLE IF NOT EXISTS messages (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    sender_id TEXT,
+    receiver_id TEXT,
+    content TEXT,
+    is_read BOOLEAN DEFAULT 0,
+    notification_sent BOOLEAN DEFAULT 0,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (sender_id) REFERENCES users(id),
+    FOREIGN KEY (receiver_id) REFERENCES users(id)
+  );
+
+  CREATE TABLE IF NOT EXISTS otps (
+    email TEXT PRIMARY KEY,
+    otp TEXT,
+    expires_at DATETIME,
+    verified BOOLEAN DEFAULT 0
+  );
+
   CREATE TABLE IF NOT EXISTS settings (
     key TEXT PRIMARY KEY,
     value TEXT
   );
 `);
+
+// Add notification_sent column if it doesn't exist
+try {
+  db.exec("ALTER TABLE messages ADD COLUMN notification_sent BOOLEAN DEFAULT 0");
+} catch (e) {
+  // Column might already exist
+}
 
 export default db;
