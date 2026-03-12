@@ -30,6 +30,8 @@ import { SiteSettings } from '../types';
 
 import { useCMSData } from '../hooks/useCMSData';
 
+import { useAuth } from '../hooks/useAuth';
+
 const IconRenderer = ({ name, size = 18, className = "" }: { name: string, size?: number, className?: string }) => {
   const IconComponent = (Icons as any)[name];
   if (!IconComponent) return null;
@@ -44,6 +46,7 @@ export const Header = () => {
   const { settings } = useCMSData('layout');
   const location = useLocation();
   const navigate = useNavigate();
+  const { user, logout } = useAuth();
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -178,13 +181,24 @@ export const Header = () => {
                   <span className="relative z-10">{cta.label}</span>
                 </Link>
               ))}
-              {/* Logout Button (Desktop) */}
-              <button 
-                onClick={() => { localStorage.removeItem('ya_token'); localStorage.removeItem('ya_user'); window.location.href = '/'; }}
-                className="text-gray-400 hover:text-red-500 transition-colors"
-              >
-                <Icons.LogOut size={20} />
-              </button>
+              {/* Login/Logout Button (Desktop) */}
+              {user ? (
+                <button 
+                  onClick={() => { logout(); navigate('/'); }}
+                  className="text-gray-400 hover:text-red-500 transition-colors"
+                  title="Logout"
+                >
+                  <Icons.LogOut size={20} />
+                </button>
+              ) : (
+                <Link 
+                  to="/login"
+                  className="text-gray-400 hover:text-brand transition-colors"
+                  title="Login"
+                >
+                  <Icons.LogIn size={20} />
+                </Link>
+              )}
             </div>
           </div>
 
@@ -318,13 +332,22 @@ export const Header = () => {
                     </div>
                   </Link>
                 ))}
-                {/* Logout Button (Mobile) */}
-                <button 
-                  onClick={() => { localStorage.removeItem('ya_token'); localStorage.removeItem('ya_user'); window.location.href = '/'; }}
-                  className="block w-full text-center py-4 rounded-xl font-bold transition-all border border-red-500/20 text-red-500 hover:bg-red-500/10"
-                >
-                  Logout
-                </button>
+                {localStorage.getItem('ya_token') ? (
+                  <button 
+                    onClick={() => { localStorage.removeItem('ya_token'); localStorage.removeItem('ya_user'); window.location.href = '/'; }}
+                    className="block w-full text-center py-4 rounded-xl font-bold transition-all border border-red-500/20 text-red-500 hover:bg-red-500/10"
+                  >
+                    Logout
+                  </button>
+                ) : (
+                  <Link 
+                    to="/login"
+                    onClick={() => setIsOpen(false)}
+                    className="block w-full text-center py-4 rounded-xl font-bold transition-all border border-brand/20 text-brand hover:bg-brand/10"
+                  >
+                    Login
+                  </Link>
+                )}
               </div>
             </div>
           </motion.div>

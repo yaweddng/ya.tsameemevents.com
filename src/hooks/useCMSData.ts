@@ -13,11 +13,11 @@ export const useCMSData = (slug?: string, username?: string) => {
   const isFetching = React.useRef(false);
 
   const fetchData = async (retries = 3) => {
-    if (isFetching.current && retries > 0) return;
+    if (isFetching.current) return;
     isFetching.current = true;
     
     try {
-      const fetchWithTimeout = async (url: string, options = {}, timeout = 15000) => {
+      const fetchWithTimeout = async (url: string, options = {}, timeout = 30000) => {
         const controller = new AbortController();
         const id = setTimeout(() => controller.abort(), timeout);
         try {
@@ -38,6 +38,7 @@ export const useCMSData = (slug?: string, username?: string) => {
           return response;
         } catch (error: any) {
           clearTimeout(id);
+          console.error(`Fetch error for ${url}:`, error);
           if (error.name === 'AbortError') {
             throw new Error(`Request timeout: ${url}`);
           }

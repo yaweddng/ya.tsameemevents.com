@@ -10,10 +10,63 @@ import bcrypt from "bcryptjs";
 import dns from "dns";
 import webpush from "web-push";
 import cors from "cors";
+import multer from "multer";
+import crypto from "crypto";
 import db from "./src/db.ts";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+const UPLOADS_DIR = path.join(__dirname, "uploads");
+if (!fs.existsSync(UPLOADS_DIR)) {
+  fs.mkdirSync(UPLOADS_DIR, { recursive: true });
+}
+
+// Encryption key for files (should be in env, but hardcoded for demo if missing)
+const ENCRYPTION_KEY = process.env.FILE_ENCRYPTION_KEY || crypto.randomBytes(32).toString('hex');
+const IV_LENGTH = 16;
+
+function encryptBuffer(buffer: Buffer): { iv: string; encryptedData: Buffer } {
+  const iv = crypto.randomBytes(IV_LENGTH);
+  const key = crypto.scryptSync(ENCRYPTION_KEY, 'salt', 32);
+  const cipher = crypto.createCipheriv('aes-256-cbc', key, iv);
+  const encrypted = Buffer.concat([cipher.update(buffer), cipher.final()]);
+  return { iv: iv.toString('hex'), encryptedData: encrypted };
+}
+
+function decryptBuffer(encryptedData: Buffer, ivHex: string): Buffer {
+  const iv = Buffer.from(ivHex, 'hex');
+  const key = crypto.scryptSync(ENCRYPTION_KEY, 'salt', 32);
+  const decipher = crypto.createDecipheriv('aes-256-cbc', key, iv);
+  const decrypted = Buffer.concat([decipher.update(encryptedData), decipher.final()]);
+  return decrypted;
+}
+
+function safeReadJSON(filePath: string, defaultValue: any = {}) {
+  try {
+    if (!fs.existsSync(filePath)) return defaultValue;
+    const content = fs.readFileSync(filePath, "utf-8");
+    if (!content) return defaultValue;
+    return JSON.parse(content);
+  } catch (e) {
+    console.error(`Error reading JSON from ${filePath}:`, e);
+    return defaultValue;
+  }
+}
+
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 10 * 1024 * 1024 }, // 10MB limit
+  fileFilter: (req, file, cb) => {
+    // Basic check to disallow potentially dangerous files
+    const dangerousExts = ['.exe', '.bat', '.cmd', '.sh', '.js', '.vbs', '.scr'];
+    const ext = path.extname(file.originalname).toLowerCase();
+    if (dangerousExts.includes(ext)) {
+      return cb(new Error("File type not allowed for security reasons."));
+    }
+    cb(null, true);
+  }
+});
 
 async function startServer() {
   const app = express();
@@ -24,7 +77,7 @@ async function startServer() {
       methods: ["GET", "POST"]
     }
   });
-  const PORT = process.env.PORT || 3000;
+  const PORT = parseInt(process.env.PORT || "3000", 10);
 
   app.use(cors());
   app.use(express.json());
@@ -67,6 +120,21 @@ async function startServer() {
 
   // Background task for unread message notifications (every 5 minutes)
   setInterval(async () => {
+    // Delete expired files
+    try {
+      const now = new Date().toISOString();
+      const expiredFiles = db.prepare("SELECT * FROM files WHERE expires_at < ?").all(now) as any[];
+      for (const file of expiredFiles) {
+        const [filePath] = file.path.split('|');
+        if (fs.existsSync(filePath)) {
+          fs.unlinkSync(filePath);
+        }
+        db.prepare("DELETE FROM files WHERE id = ?").run(file.id);
+      }
+    } catch (e) {
+      console.error("Error deleting expired files:", e);
+    }
+
     const tenMinutesAgo = new Date(Date.now() - 10 * 60 * 1000).toISOString();
     
     // Find unread messages older than 10 minutes that haven't had a notification sent
@@ -165,21 +233,36 @@ async function startServer() {
   const REDIRECTIONS_PATH = path.join(__dirname, "src/data/redirections.json");
 
   // Socket.io logic
+  const connectedUsers = new Map<string, string>(); // userId -> socketId
+
   io.on("connection", (socket) => {
     console.log("A user connected:", socket.id);
 
     socket.on("join", (userId) => {
       socket.join(userId);
+      connectedUsers.set(userId, socket.id);
+      io.emit("user_status", { userId, status: "online" });
       console.log(`User ${userId} joined their room`);
+    });
+
+    socket.on("typing", (data) => {
+      const { senderId, receiverId, isTyping } = data;
+      io.to(receiverId).emit("user_typing", { userId: senderId, isTyping });
     });
 
     socket.on("send_message", (data) => {
       try {
-        const { senderId, receiverId, content } = data;
+        const { senderId, receiverId, content, type = 'text', fileId = null } = data;
         
+        // Check if user is blocked from sending messages
+        const blocked = db.prepare("SELECT * FROM feature_blocks WHERE user_id = ? AND feature = 'messages'").get(senderId);
+        if (blocked) {
+          return socket.emit("error", { message: "You are blocked from sending messages." });
+        }
+
         // Save to DB
-        const stmt = db.prepare("INSERT INTO messages (sender_id, receiver_id, content) VALUES (?, ?, ?)");
-        const result = stmt.run(senderId, receiverId, content);
+        const stmt = db.prepare("INSERT INTO messages (sender_id, receiver_id, content, type, file_id) VALUES (?, ?, ?, ?, ?)");
+        const result = stmt.run(senderId, receiverId, content, type, fileId);
         const messageId = result.lastInsertRowid;
 
         const newMessage = {
@@ -187,14 +270,20 @@ async function startServer() {
           sender_id: senderId,
           receiver_id: receiverId,
           content,
+          type,
+          file_id: fileId,
           created_at: new Date().toISOString(),
-          is_read: 0
+          is_read: 0,
+          is_deleted: 0
         };
 
         // Emit to receiver
         io.to(receiverId).emit("new_message", newMessage);
         // Emit back to sender for confirmation
         io.to(senderId).emit("message_sent", newMessage);
+        
+        // Emit to admin room for monitoring
+        io.to("admin_monitoring").emit("admin_new_message", newMessage);
 
         // Send push notification to receiver
         const subscriptions = db.prepare("SELECT subscription FROM push_subscriptions WHERE user_id = ?").all(receiverId) as any[];
@@ -218,12 +307,100 @@ async function startServer() {
           }
         });
       } catch (error) {
-        console.error("Error sending message:", error);
+        console.error("Error saving message:", error);
         socket.emit("message_error", { error: "Failed to send message" });
       }
     });
 
+    socket.on("delete_message", (data) => {
+      try {
+        const { messageId, adminId } = data;
+        // Only admin can delete
+        const admin = db.prepare("SELECT role FROM users WHERE id = ?").get(adminId) as any;
+        if (admin && admin.role === 'admin') {
+          db.prepare("UPDATE messages SET is_deleted = 1 WHERE id = ?").run(messageId);
+          io.emit("message_deleted", { messageId });
+        }
+      } catch (e) {
+        console.error("Error deleting message:", e);
+      }
+    });
+
+    // WebRTC Signaling
+    socket.on("call_user", (data) => {
+      const { userToCall, signalData, from, name, type } = data;
+      
+      // Check if user is already in a call
+      const activeCall = db.prepare("SELECT * FROM calls WHERE (caller_id = ? OR receiver_id = ?) AND status = 'ongoing'").get(userToCall, userToCall);
+      if (activeCall) {
+        return io.to(from).emit("call_rejected", { reason: "User is busy on another call." });
+      }
+
+      // Check preferences
+      const prefs = db.prepare("SELECT allow_calls FROM user_preferences WHERE user_id = ?").get(userToCall) as any;
+      if (prefs && prefs.allow_calls === 0) {
+        return io.to(from).emit("call_rejected", { reason: "User is not accepting calls." });
+      }
+
+      // Check blocks
+      const blocked = db.prepare("SELECT * FROM feature_blocks WHERE user_id = ? AND feature = 'calls'").get(from);
+      if (blocked) {
+        return io.to(from).emit("call_rejected", { reason: "You are blocked from making calls." });
+      }
+
+      const callId = crypto.randomUUID();
+      db.prepare("INSERT INTO calls (id, caller_id, receiver_id, type) VALUES (?, ?, ?, ?)").run(callId, from, userToCall, type);
+
+      const caller = db.prepare("SELECT name FROM users WHERE id = ?").get(from) as any;
+      const receiver = db.prepare("SELECT name FROM users WHERE id = ?").get(userToCall) as any;
+
+      socket.emit("call_initiated", { callId });
+      io.to(userToCall).emit("call_incoming", { signal: signalData, from, name, type, callId });
+      io.to("admin_monitoring").emit("admin_call_started", { 
+        callId, 
+        callerId: from, 
+        receiverId: userToCall, 
+        callerName: caller?.name || 'Unknown',
+        receiverName: receiver?.name || 'Unknown',
+        type 
+      });
+    });
+
+    socket.on("answer_call", (data) => {
+      io.to(data.to).emit("call_accepted", data.signal);
+    });
+
+    socket.on("end_call", (data) => {
+      const { callId, to } = data;
+      db.prepare("UPDATE calls SET status = 'ended', ended_at = CURRENT_TIMESTAMP WHERE id = ?").run(callId);
+      if (to) io.to(to).emit("call_ended");
+      io.to("admin_monitoring").emit("admin_call_ended", { callId });
+    });
+
+    socket.on("admin_terminate_call", (data) => {
+      const { callId, callerId, receiverId } = data;
+      db.prepare("UPDATE calls SET status = 'ended', ended_at = CURRENT_TIMESTAMP WHERE id = ?").run(callId);
+      io.to(callerId).emit("call_ended", { reason: "Terminated by admin" });
+      io.to(receiverId).emit("call_ended", { reason: "Terminated by admin" });
+      io.to("admin_monitoring").emit("admin_call_ended", { callId });
+    });
+
+    socket.on("join_admin_monitoring", () => {
+      socket.join("admin_monitoring");
+    });
+
     socket.on("disconnect", () => {
+      let disconnectedUserId: string | null = null;
+      for (const [userId, socketId] of connectedUsers.entries()) {
+        if (socketId === socket.id) {
+          disconnectedUserId = userId;
+          break;
+        }
+      }
+      if (disconnectedUserId) {
+        connectedUsers.delete(disconnectedUserId);
+        io.emit("user_status", { userId: disconnectedUserId, status: "offline" });
+      }
       console.log("User disconnected");
     });
   });
@@ -624,6 +801,118 @@ async function startServer() {
     } catch (e) {
       console.error("Registration Error:", e);
       res.status(500).json({ error: "Registration failed" });
+    }
+  });
+
+  app.post("/api/upload", upload.single('file'), (req, res) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ error: "No file uploaded" });
+      }
+      const { senderId, receiverId } = req.body;
+      if (!senderId || !receiverId) {
+        return res.status(400).json({ error: "Missing senderId or receiverId" });
+      }
+
+      const fileId = crypto.randomUUID();
+      const { iv, encryptedData } = encryptBuffer(req.file.buffer);
+      const filePath = path.join(UPLOADS_DIR, `${fileId}.enc`);
+      
+      fs.writeFileSync(filePath, encryptedData);
+
+      // Save metadata to db
+      const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(); // 30 days
+      const stmt = db.prepare(`
+        INSERT INTO files (id, sender_id, receiver_id, name, size, mime_type, path, expires_at)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+      `);
+      stmt.run(fileId, senderId, receiverId, req.file.originalname, req.file.size, req.file.mimetype, `${filePath}|${iv}`, expiresAt);
+
+      res.json({ success: true, fileId, name: req.file.originalname, size: req.file.size, mimeType: req.file.mimetype });
+    } catch (e: any) {
+      console.error("Upload error:", e);
+      res.status(500).json({ error: e.message || "Failed to upload file" });
+    }
+  });
+
+  app.get("/api/files/:id", (req, res) => {
+    try {
+      const { id } = req.params;
+      const file: any = db.prepare("SELECT * FROM files WHERE id = ?").get(id);
+      if (!file) {
+        return res.status(404).json({ error: "File not found" });
+      }
+
+      const [filePath, ivHex] = file.path.split('|');
+      if (!fs.existsSync(filePath)) {
+        return res.status(404).json({ error: "File missing on disk" });
+      }
+
+      const encryptedData = fs.readFileSync(filePath);
+      const decryptedData = decryptBuffer(encryptedData, ivHex);
+
+      res.setHeader('Content-Type', file.mime_type);
+      res.setHeader('Content-Disposition', `attachment; filename="${file.name}"`);
+      res.send(decryptedData);
+    } catch (e: any) {
+      console.error("Download error:", e);
+      res.status(500).json({ error: "Failed to download file" });
+    }
+  });
+
+  app.get("/api/user/preferences", (req, res) => {
+    try {
+      const { userId } = req.query;
+      if (!userId) return res.status(400).json({ error: "Missing userId" });
+      
+      let prefs = db.prepare("SELECT * FROM user_preferences WHERE user_id = ?").get(userId) as any;
+      if (!prefs) {
+        db.prepare("INSERT INTO user_preferences (user_id, allow_calls) VALUES (?, 1)").run(userId);
+        prefs = { user_id: userId, allow_calls: 1 };
+      }
+      res.json(prefs);
+    } catch (e: any) {
+      res.status(500).json({ error: e.message });
+    }
+  });
+
+  app.post("/api/user/preferences", (req, res) => {
+    try {
+      const { userId, allowCalls } = req.body;
+      if (!userId) return res.status(400).json({ error: "Missing userId" });
+      
+      db.prepare(`
+        INSERT INTO user_preferences (user_id, allow_calls) 
+        VALUES (?, ?) 
+        ON CONFLICT(user_id) DO UPDATE SET allow_calls = ?
+      `).run(userId, allowCalls ? 1 : 0, allowCalls ? 1 : 0);
+      
+      res.json({ success: true });
+    } catch (e: any) {
+      res.status(500).json({ error: e.message });
+    }
+  });
+
+  app.get("/api/admin/feature-blocks", (req, res) => {
+    try {
+      const blocks = db.prepare("SELECT * FROM feature_blocks").all();
+      res.json(blocks);
+    } catch (e: any) {
+      res.status(500).json({ error: e.message });
+    }
+  });
+
+  app.post("/api/admin/feature-blocks", (req, res) => {
+    try {
+      const { userId, feature, block } = req.body;
+      if (block) {
+        db.prepare("INSERT OR IGNORE INTO feature_blocks (user_id, feature) VALUES (?, ?)").run(userId, feature);
+      } else {
+        db.prepare("DELETE FROM feature_blocks WHERE user_id = ? AND feature = ?").run(userId, feature);
+      }
+      res.json({ success: true });
+    } catch (e: any) {
+      res.status(500).json({ error: e.message });
     }
   });
 
@@ -1212,12 +1501,8 @@ async function startServer() {
   });
 
   app.get("/api/pages", (req, res) => {
-    try {
-      const data = JSON.parse(fs.readFileSync(PAGES_PATH, "utf-8"));
-      res.json(data.pages);
-    } catch (e) {
-      res.json([]);
-    }
+    const data = safeReadJSON(PAGES_PATH, { pages: [] });
+    res.json(data.pages || []);
   });
 
   app.post("/api/pages", (req, res) => {
@@ -1230,7 +1515,7 @@ async function startServer() {
   });
 
   app.get("/api/package-steps", (req, res) => {
-    const data = JSON.parse(fs.readFileSync(PACKAGE_STEPS_PATH, "utf-8"));
+    const data = safeReadJSON(PACKAGE_STEPS_PATH, []);
     res.json(data);
   });
 
@@ -1243,7 +1528,7 @@ async function startServer() {
   });
 
   app.get("/api/settings", (req, res) => {
-    const data = JSON.parse(fs.readFileSync(SETTINGS_PATH, "utf-8"));
+    const data = safeReadJSON(SETTINGS_PATH, {});
     res.json(data);
   });
 
@@ -1256,10 +1541,10 @@ async function startServer() {
   });
 
   app.get("/sitemap.xml", (req, res) => {
-    const services = JSON.parse(fs.readFileSync(SERVICES_PATH, "utf-8")).services;
-    const blogs = JSON.parse(fs.readFileSync(BLOGS_PATH, "utf-8")).blogs;
-    const promos = JSON.parse(fs.readFileSync(PROMOS_PATH, "utf-8")).promos;
-    const packages = JSON.parse(fs.readFileSync(PACKAGES_DATA_PATH, "utf-8")).packages;
+    const services = safeReadJSON(SERVICES_PATH, { services: [] }).services || [];
+    const blogs = safeReadJSON(BLOGS_PATH, { blogs: [] }).blogs || [];
+    const promos = safeReadJSON(PROMOS_PATH, { promos: [] }).promos || [];
+    const packages = safeReadJSON(PACKAGES_DATA_PATH, { packages: [] }).packages || [];
     const baseUrl = "https://ya.tssmeemevents.com";
 
     let sitemap = `<?xml version="1.0" encoding="UTF-8"?>
@@ -1303,8 +1588,8 @@ async function startServer() {
   });
 
   app.get("/api/services", (req, res) => {
-    const data = JSON.parse(fs.readFileSync(SERVICES_PATH, "utf-8"));
-    res.json(data.services);
+    const data = safeReadJSON(SERVICES_PATH, { services: [] });
+    res.json(data.services || []);
   });
 
   app.post("/api/services", (req, res) => {
@@ -1318,8 +1603,8 @@ async function startServer() {
   });
 
   app.get("/api/blogs", (req, res) => {
-    const data = JSON.parse(fs.readFileSync(BLOGS_PATH, "utf-8"));
-    res.json(data.blogs);
+    const data = safeReadJSON(BLOGS_PATH, { blogs: [] });
+    res.json(data.blogs || []);
   });
 
   app.post("/api/bookings", async (req, res) => {
@@ -1596,12 +1881,8 @@ async function startServer() {
   });
 
   app.get("/api/promos", (req, res) => {
-    try {
-      const data = JSON.parse(fs.readFileSync(PROMOS_PATH, "utf-8"));
-      res.json(data.promos);
-    } catch (e) {
-      res.json([]);
-    }
+    const data = safeReadJSON(PROMOS_PATH, { promos: [] });
+    res.json(data.promos || []);
   });
 
   app.post("/api/promos", (req, res) => {
@@ -1631,21 +1912,13 @@ async function startServer() {
   });
 
   app.get("/api/booking-forms", (req, res) => {
-    try {
-      const data = JSON.parse(fs.readFileSync(BOOKING_FORMS_PATH, "utf-8"));
-      res.json(data.forms);
-    } catch (e) {
-      res.json([]);
-    }
+    const data = safeReadJSON(BOOKING_FORMS_PATH, { forms: [] });
+    res.json(data.forms || []);
   });
 
   app.get("/api/packages", (req, res) => {
-    try {
-      const data = JSON.parse(fs.readFileSync(PACKAGES_DATA_PATH, "utf-8"));
-      res.json(data.packages);
-    } catch (e) {
-      res.json([]);
-    }
+    const data = safeReadJSON(PACKAGES_DATA_PATH, { packages: [] });
+    res.json(data.packages || []);
   });
 
   app.post("/api/booking-forms", (req, res) => {
@@ -1658,15 +1931,12 @@ async function startServer() {
   });
 
   app.get("/api/ratings", (req, res) => {
-    try {
-      const data = JSON.parse(fs.readFileSync(RATINGS_PATH, "utf-8"));
-      if (req.headers.authorization === "Bearer ya-admin-secret") {
-        res.json(data.ratings);
-      } else {
-        res.json(data.ratings.filter((r: any) => r.status === 'approved'));
-      }
-    } catch (e) {
-      res.json([]);
+    const data = safeReadJSON(RATINGS_PATH, { ratings: [] });
+    const ratings = data.ratings || [];
+    if (req.headers.authorization === "Bearer ya-admin-secret") {
+      res.json(ratings);
+    } else {
+      res.json(ratings.filter((r: any) => r.status === 'approved'));
     }
   });
 

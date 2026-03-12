@@ -23,8 +23,7 @@ export const Login = () => {
     setError('');
     setLoading(true);
 
-    const baseUrl = import.meta.env.VITE_API_URL || '';
-    const endpoint = mode === 'forgot-password' ? `${baseUrl}/api/auth/forgot-password` : `${baseUrl}/api/auth/send-otp`;
+    const endpoint = mode === 'forgot-password' ? `/api/auth/forgot-password` : `/api/auth/send-otp`;
 
     try {
       const res = await fetch(endpoint, {
@@ -59,18 +58,17 @@ export const Login = () => {
     setError('');
     setLoading(true);
 
-    const baseUrl = import.meta.env.VITE_API_URL || '';
     let endpoint = '';
     let body = {};
 
     if (mode === 'login') {
-      endpoint = `${baseUrl}/api/auth/login`;
+      endpoint = `/api/auth/login`;
       body = { email: email.trim(), password };
     } else if (mode === 'register') {
-      endpoint = `${baseUrl}/api/auth/register`;
+      endpoint = `/api/auth/register`;
       body = { email: email.trim(), password, name, username, otp: otp.trim() };
     } else if (mode === 'forgot-password') {
-      endpoint = `${baseUrl}/api/auth/reset-password`;
+      endpoint = `/api/auth/reset-password`;
       body = { email: email.trim(), otp: otp.trim(), newPassword };
     }
 
