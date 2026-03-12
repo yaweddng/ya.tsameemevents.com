@@ -60,6 +60,7 @@ const Inbox = () => {
     callId: null
   });
   const [stream, setStream] = useState<MediaStream | null>(null);
+  const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null);
   const myVideo = useRef<HTMLVideoElement>(null);
   const userVideo = useRef<HTMLVideoElement>(null);
   const connectionRef = useRef<any>(null);
@@ -282,8 +283,18 @@ const Inbox = () => {
       sounds.current.callWaiting.pause();
       sounds.current.callWaiting.currentTime = 0;
       sounds.current.error.play().catch(e => console.error("Error playing sound:", e));
-      if (data?.reason) alert(data.reason);
+      if (data?.reason) setNotification({ message: data.reason, type: 'error' });
       endCall();
+    });
+
+    newSocket.on('signal', (data: any) => {
+      if (connectionRef.current && !connectionRef.current.destroyed) {
+        try {
+          connectionRef.current.signal(data.signal);
+        } catch (err) {
+          console.error("Signal error:", err);
+        }
+      }
     });
 
     // Admin Monitoring Listeners
@@ -381,6 +392,19 @@ const Inbox = () => {
     }
   };
 
+  // Sync streams to video elements
+  useEffect(() => {
+    if (myVideo.current && stream) {
+      myVideo.current.srcObject = stream;
+    }
+  }, [stream, callState.callAccepted, isMinimized]);
+
+  useEffect(() => {
+    if (userVideo.current && remoteStream) {
+      userVideo.current.srcObject = remoteStream;
+    }
+  }, [remoteStream, callState.callAccepted, isMinimized]);
+
   const toggleCamera = async () => {
     if (!stream || callState.callType !== 'video') return;
     
@@ -419,38 +443,52 @@ const Inbox = () => {
     try {
       const currentStream = await navigator.mediaDevices.getUserMedia({ video: type === 'video', audio: true });
       setStream(currentStream);
-      if (myVideo.current) {
-        myVideo.current.srcObject = currentStream;
-      }
 
       const peer = new Peer({
         initiator: true,
-        trickle: false,
-        stream: currentStream
+        trickle: true,
+        stream: currentStream,
+        config: {
+          iceServers: [
+            { urls: 'stun:stun.l.google.com:19302' },
+            { urls: 'stun:stun1.l.google.com:19302' },
+            { urls: 'stun:stun2.l.google.com:19302' },
+          ]
+        }
       });
 
       peer.on('signal', (data) => {
-        socket.emit('call_user', {
-          userToCall: selectedUser.id,
-          signalData: data,
-          from: user.id,
-          name: user.name,
-          type
-        });
+        if (data.type === 'offer') {
+          socket.emit('call_user', {
+            userToCall: selectedUser.id,
+            signalData: data,
+            from: user.id,
+            name: user.name,
+            type
+          });
+        } else {
+          socket.emit('signal', {
+            to: selectedUser.id,
+            signal: data,
+            from: user.id
+          });
+        }
         sounds.current.calling.play().catch(e => console.error("Error playing sound:", e));
       });
 
-      peer.on('stream', (currentStream) => {
-        if (userVideo.current) {
-          userVideo.current.srcObject = currentStream;
-        }
+      peer.on('stream', (remoteStream) => {
+        setRemoteStream(remoteStream);
       });
 
       socket.on('call_accepted', (signal) => {
         sounds.current.calling.pause();
         sounds.current.calling.currentTime = 0;
         setCallState(prev => ({ ...prev, callAccepted: true }));
-        peer.signal(signal);
+        try {
+          peer.signal(signal);
+        } catch (err) {
+          console.error("Call accepted signal error:", err);
+        }
         
         // Start duration timer
         setCallDuration(0);
@@ -485,27 +523,41 @@ const Inbox = () => {
     try {
       const currentStream = await navigator.mediaDevices.getUserMedia({ video: withVideo, audio: true });
       setStream(currentStream);
-      if (myVideo.current) {
-        myVideo.current.srcObject = currentStream;
-      }
 
       const peer = new Peer({
         initiator: false,
-        trickle: false,
-        stream: currentStream
-      });
-
-      peer.on('signal', (data) => {
-        socket?.emit('answer_call', { signal: data, to: callState.caller });
-      });
-
-      peer.on('stream', (currentStream) => {
-        if (userVideo.current) {
-          userVideo.current.srcObject = currentStream;
+        trickle: true,
+        stream: currentStream,
+        config: {
+          iceServers: [
+            { urls: 'stun:stun.l.google.com:19302' },
+            { urls: 'stun:stun1.l.google.com:19302' },
+            { urls: 'stun:stun2.l.google.com:19302' },
+          ]
         }
       });
 
-      peer.signal(callState.callerSignal);
+      peer.on('signal', (data) => {
+        if (data.type === 'answer') {
+          socket?.emit('answer_call', { signal: data, to: callState.caller });
+        } else {
+          socket?.emit('signal', {
+            to: callState.caller,
+            signal: data,
+            from: user?.id
+          });
+        }
+      });
+
+      peer.on('stream', (remoteStream) => {
+        setRemoteStream(remoteStream);
+      });
+
+      try {
+        peer.signal(callState.callerSignal);
+      } catch (err) {
+        console.error("Initial answer signal error:", err);
+      }
       connectionRef.current = peer;
       
       // Start duration timer
@@ -551,6 +603,7 @@ const Inbox = () => {
       stream.getTracks().forEach(track => track.stop());
       setStream(null);
     }
+    setRemoteStream(null);
     if (myVideo.current) myVideo.current.srcObject = null;
     if (userVideo.current) userVideo.current.srcObject = null;
     
@@ -1060,23 +1113,16 @@ const Inbox = () => {
       {/* Call UI Overlay */}
       {(stream || callState.isReceivingCall) && !isMinimized && (
         <div className="fixed inset-0 bg-dark z-50 flex flex-col items-center justify-between p-4 sm:p-8">
-          {/* Background for video call */}
-          {callState.callType === 'video' && callState.callAccepted && (
-            <div className="absolute inset-0 z-0 overflow-hidden">
-              <video 
-                playsInline 
-                ref={userVideo} 
-                autoPlay 
-                className="w-full h-full object-cover" 
-              />
-              <div className="absolute inset-0 bg-black/30" />
-            </div>
-          )}
-
-          {/* Hidden audio for remote stream in audio-only calls */}
-          {callState.callType === 'audio' && callState.callAccepted && (
-            <audio ref={userVideo as any} autoPlay className="hidden" />
-          )}
+          {/* Remote Stream (Video or Audio) */}
+          <div className={callState.callAccepted ? (callState.callType === 'video' ? "absolute inset-0 z-0 overflow-hidden" : "absolute opacity-0 pointer-events-none") : "hidden"}>
+            <video 
+              playsInline 
+              ref={userVideo} 
+              autoPlay 
+              className="w-full h-full object-cover" 
+            />
+            {callState.callType === 'video' && <div className="absolute inset-0 bg-black/30" />}
+          </div>
 
           {/* Top Bar */}
           <div className="relative z-10 w-full max-w-4xl flex justify-between items-start">

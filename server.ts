@@ -370,6 +370,10 @@ async function startServer() {
       io.to(data.to).emit("call_accepted", data.signal);
     });
 
+    socket.on("signal", (data) => {
+      io.to(data.to).emit("signal", { signal: data.signal, from: data.from });
+    });
+
     socket.on("end_call", (data) => {
       const { callId, to } = data;
       db.prepare("UPDATE calls SET status = 'ended', ended_at = CURRENT_TIMESTAMP WHERE id = ?").run(callId);
