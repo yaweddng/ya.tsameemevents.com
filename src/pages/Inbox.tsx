@@ -381,6 +381,39 @@ const Inbox = () => {
     }
   };
 
+  const toggleCamera = async () => {
+    if (!stream || callState.callType !== 'video') return;
+    
+    try {
+      const newFacingMode = isFrontCamera ? 'environment' : 'user';
+      const newStream = await navigator.mediaDevices.getUserMedia({ 
+        video: { facingMode: newFacingMode }, 
+        audio: true 
+      });
+      
+      const videoTrack = newStream.getVideoTracks()[0];
+      const oldVideoTrack = stream.getVideoTracks()[0];
+      
+      if (connectionRef.current) {
+        connectionRef.current.replaceTrack(oldVideoTrack, videoTrack, stream);
+      }
+      
+      // Update local stream state
+      oldVideoTrack.stop();
+      const updatedStream = new MediaStream([videoTrack, ...stream.getAudioTracks()]);
+      setStream(updatedStream);
+      
+      if (myVideo.current) {
+        myVideo.current.srcObject = updatedStream;
+      }
+      
+      setIsFrontCamera(!isFrontCamera);
+    } catch (err) {
+      console.error("Error toggling camera:", err);
+      setNotification({ message: "Failed to switch camera.", type: 'error' });
+    }
+  };
+
   const callUser = async (type: 'audio' | 'video') => {
     if (!selectedUser || !socket || !user) return;
     try {
@@ -518,6 +551,9 @@ const Inbox = () => {
       stream.getTracks().forEach(track => track.stop());
       setStream(null);
     }
+    if (myVideo.current) myVideo.current.srcObject = null;
+    if (userVideo.current) userVideo.current.srcObject = null;
+    
     if (socket) {
       const targetId = callState.caller || selectedUser?.id;
       if (targetId) {
@@ -1027,9 +1063,19 @@ const Inbox = () => {
           {/* Background for video call */}
           {callState.callType === 'video' && callState.callAccepted && (
             <div className="absolute inset-0 z-0 overflow-hidden">
-              <video playsInline ref={userVideo} autoPlay className="w-full h-full object-cover" />
+              <video 
+                playsInline 
+                ref={userVideo} 
+                autoPlay 
+                className="w-full h-full object-cover" 
+              />
               <div className="absolute inset-0 bg-black/30" />
             </div>
+          )}
+
+          {/* Hidden audio for remote stream in audio-only calls */}
+          {callState.callType === 'audio' && callState.callAccepted && (
+            <audio ref={userVideo as any} autoPlay className="hidden" />
           )}
 
           {/* Top Bar */}
@@ -1080,7 +1126,14 @@ const Inbox = () => {
           {/* Picture-in-Picture (Video Call) */}
           {callState.callType === 'video' && callState.callAccepted && stream && (
             <div className="absolute top-4 right-4 sm:top-8 sm:right-8 z-20 w-32 sm:w-48 aspect-video bg-black rounded-xl overflow-hidden border-2 border-white/20 shadow-2xl cursor-pointer hover:scale-105 transition-transform">
-              <video playsInline muted ref={myVideo} autoPlay className="w-full h-full object-cover" />
+              <video 
+                playsInline 
+                muted 
+                ref={myVideo} 
+                autoPlay 
+                className="w-full h-full object-cover" 
+                style={{ transform: isFrontCamera ? 'scaleX(-1)' : 'none' }}
+              />
             </div>
           )}
 
@@ -1139,7 +1192,10 @@ const Inbox = () => {
                   {isMuted ? <MicOff size={24} /> : <Mic size={24} />}
                 </button>
                 {callState.callType === 'video' && (
-                  <button className="p-4 bg-white/5 text-white rounded-2xl hover:bg-white/10 transition-colors">
+                  <button 
+                    onClick={toggleCamera}
+                    className="p-4 bg-white/5 text-white rounded-2xl hover:bg-white/10 transition-colors"
+                  >
                     <RefreshCcw size={24} />
                   </button>
                 )}
