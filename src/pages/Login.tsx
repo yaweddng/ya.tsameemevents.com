@@ -23,7 +23,8 @@ export const Login = () => {
     setError('');
     setLoading(true);
 
-    const endpoint = mode === 'forgot-password' ? '/api/auth/forgot-password' : '/api/auth/send-otp';
+    const baseUrl = import.meta.env.VITE_API_URL || '';
+    const endpoint = mode === 'forgot-password' ? `${baseUrl}/api/auth/forgot-password` : `${baseUrl}/api/auth/send-otp`;
 
     try {
       const res = await fetch(endpoint, {
@@ -32,14 +33,22 @@ export const Login = () => {
         body: JSON.stringify({ email })
       });
 
-      const data = await res.json();
+      let data;
+      try {
+        data = await res.json();
+      } catch (e) {
+        console.error('Failed to parse response as JSON. Status:', res.status);
+        throw new Error(`Server returned an invalid response (${res.status}). Check console for details.`);
+      }
+
       if (res.ok) {
         setStep('otp');
       } else {
         setError(data.error || 'Failed to send OTP');
       }
-    } catch (err) {
-      setError('Failed to connect to server');
+    } catch (err: any) {
+      console.error('OTP error:', err);
+      setError(err.message || 'Failed to connect to server');
     } finally {
       setLoading(false);
     }
@@ -50,17 +59,18 @@ export const Login = () => {
     setError('');
     setLoading(true);
 
+    const baseUrl = import.meta.env.VITE_API_URL || '';
     let endpoint = '';
     let body = {};
 
     if (mode === 'login') {
-      endpoint = '/api/auth/login';
+      endpoint = `${baseUrl}/api/auth/login`;
       body = { email: email.trim(), password };
     } else if (mode === 'register') {
-      endpoint = '/api/auth/register';
+      endpoint = `${baseUrl}/api/auth/register`;
       body = { email: email.trim(), password, name, username, otp: otp.trim() };
     } else if (mode === 'forgot-password') {
-      endpoint = '/api/auth/reset-password';
+      endpoint = `${baseUrl}/api/auth/reset-password`;
       body = { email: email.trim(), otp: otp.trim(), newPassword };
     }
 
@@ -71,7 +81,14 @@ export const Login = () => {
         body: JSON.stringify(body)
       });
 
-      const data = await res.json();
+      let data;
+      try {
+        data = await res.json();
+      } catch (e) {
+        console.error('Failed to parse response as JSON. Status:', res.status);
+        throw new Error(`Server returned an invalid response (${res.status}). Check console for details.`);
+      }
+
       if (res.ok) {
         if (mode === 'register') {
           setMode('login');
@@ -101,8 +118,9 @@ export const Login = () => {
       } else {
         setError(data.error || 'Something went wrong');
       }
-    } catch (err) {
-      setError('Failed to connect to server');
+    } catch (err: any) {
+      console.error('Login error:', err);
+      setError(err.message || 'Failed to connect to server');
     } finally {
       setLoading(false);
     }

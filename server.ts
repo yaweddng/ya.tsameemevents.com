@@ -9,6 +9,7 @@ import nodemailer from "nodemailer";
 import bcrypt from "bcryptjs";
 import dns from "dns";
 import webpush from "web-push";
+import cors from "cors";
 import db from "./src/db.ts";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -23,8 +24,9 @@ async function startServer() {
       methods: ["GET", "POST"]
     }
   });
-  const PORT = 3000;
+  const PORT = process.env.PORT || 3000;
 
+  app.use(cors());
   app.use(express.json());
 
   webpush.setVapidDetails(
